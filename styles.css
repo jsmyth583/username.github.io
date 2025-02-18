@@ -14,23 +14,56 @@ body {
 /* Chatbox container */
 #chat-container {
     background-color: #fff;
-    width: 400px;
-    max-width: 90%;
+    width: 450px; /* Increased width */
+    max-width: 95%;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    height: 550px;
-    padding: 15px;
+    height: 600px; /* Increased height */
+    padding: 20px;
     position: relative;
     text-align: center;
-    margin-top: -20px; /* Move chatbot up */
+    margin-top: 10px; /* Move chatbot down */
 }
 
 /* Logo Styling */
 #business-logo {
-    width: 120px; /* Make the logo smaller */
-    margin: 5px auto;
+    width: 180px; /* Increased logo size */
+    margin: 10px auto;
     display: block;
+}
+
+/* Chatbox (where messages appear) */
+#chat-box {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #fafafa;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Buttons inside chat */
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.chat-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.chat-button:hover {
+    background-color: #45a049;
 }
