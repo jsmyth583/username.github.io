@@ -35,7 +35,34 @@ body {
     display: block;
 }
 
-/* Chatbox (where messages appear) */
+/* Start Button */
+#start-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+#start-button:hover {
+    background-color: #45a049;
+}
+
+/* Chat Header */
+#chat-header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0;
+}
+
+/* Chatbox */
 #chat-box {
     flex-grow: 1;
     overflow-y: auto;
