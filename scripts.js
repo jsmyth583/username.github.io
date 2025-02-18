@@ -11,23 +11,26 @@ function startChat() {
     document.getElementById("start-button").style.display = "none";
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
-    
     document.getElementById("user-input").style.display = "none";
     document.getElementById("send-button").style.display = "none";
-
-    askQuestion("Jay: Where would you like to leave your review?", [{ text: "Google", value: "google" }, { text: "Facebook", value: "facebook" }]);
+    
+    if (chatHistory.length === 0) {
+        askQuestion("Jay: Where would you like to leave your review?", [{ text: "Google", value: "google" }, { text: "Facebook", value: "facebook" }]);
+    }
 }
 
 function askQuestion(text, options) {
-    chatHistory.push({ text, options });
-    addMessage(text);
-    addButton(options);
+    if (chatHistory.length === 0 || chatHistory[chatHistory.length - 1].text !== text) {
+        chatHistory.push({ text, options });
+        addMessage(text, "bot");
+        addButton(options);
+    }
 }
 
-function addMessage(text) {
+function addMessage(text, sender) {
     let chatBox = document.getElementById("chat-box");
     let msg = document.createElement("div");
-    msg.classList.add("chat-message");
+    msg.classList.add("chat-message", sender === "user" ? "user-message" : "bot-message");
     msg.textContent = text;
     chatBox.appendChild(msg);
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -35,7 +38,6 @@ function addMessage(text) {
 
 function addButton(options) {
     let chatBox = document.getElementById("chat-box");
-
     let oldButtons = document.querySelector(".button-container");
     if (oldButtons) {
         oldButtons.remove();
@@ -49,7 +51,7 @@ function addButton(options) {
         button.textContent = option.text;
         button.classList.add("chat-button");
         button.onclick = function () {
-            addMessage("You: " + option.text);
+            addMessage("You: " + option.text, "user");
             chatBox.removeChild(buttonContainer);
             setTimeout(() => {
                 jayResponse(option.value);
@@ -83,7 +85,6 @@ function jayResponse(message) {
 
 function addFileUploadOption() {
     let chatBox = document.getElementById("chat-box");
-    
     let oldUpload = document.querySelector(".upload-container");
     if (oldUpload) {
         oldUpload.remove();
@@ -99,7 +100,7 @@ function addFileUploadOption() {
 
     fileInput.addEventListener("change", function () {
         if (fileInput.files.length > 0) {
-            addMessage("You uploaded: " + fileInput.files[0].name);
+            addMessage("You uploaded: " + fileInput.files[0].name, "user");
             chatBox.removeChild(uploadContainer);
             setTimeout(() => {
                 askQuestion("Jay: Thank you! To provide you with your Free Naan voucher, we need your Full Name and Email Address.", []);
@@ -118,13 +119,13 @@ function addFileUploadOption() {
 function submitUserDetails() {
     let userInput = document.getElementById("user-input").value;
     if (userInput.trim() !== "") {
-        addMessage("You: " + userInput);
+        addMessage("You: " + userInput, "user");
         document.getElementById("user-input").style.display = "none";
         document.getElementById("send-button").style.display = "none";
 
         setTimeout(() => {
-            addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.");
-            addMessage("Jay: We appreciate your support and hope to serve you again soon!");
+            addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
+            addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
         }, 1000);
     }
 }
