@@ -6,14 +6,18 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function startChat() {
-    document.getElementById("start-button").style.display = "none"; // Hide Start Button
-    document.getElementById("chat-header").style.display = "block"; // Show Chat Header
-    document.getElementById("chat-box").style.display = "block"; // Show Chat Box
-    document.getElementById("user-input").style.display = "block"; // Show Input Field
-    document.getElementById("send-button").style.display = "block"; // Show Send Button
+    // Hide Start Button
+    document.getElementById("start-button").style.display = "none";
 
+    // Show Chat Elements
+    document.getElementById("chat-header").style.display = "block";
+    document.getElementById("chat-box").style.display = "block";
+    document.getElementById("user-input").style.display = "block";
+    document.getElementById("send-button").style.display = "block";
+
+    // Start the conversation properly (only ask once)
     addMessage("Jay: Hi, it's Jay from Green Chilli! Would you like to leave a review and receive a free Naan on your next order?");
-    addButton([{ text: "Yes", value: "yes" }, { text: "No", value: "no" }]);
+    addButton([{ text: "Yes", value: "yes_review" }, { text: "No", value: "no_review" }]);
 }
 
 function addMessage(text) {
@@ -50,11 +54,11 @@ function addButton(options) {
 function jayResponse(message) {
     let response = "";
 
-    if (message === "yes") {
+    if (message === "yes_review") {
         response = "Awesome! Where would you like to leave your review?";
         addMessage("Jay: " + response);
         addButton([{ text: "Google", value: "google" }, { text: "Facebook", value: "facebook" }]);
-    } else if (message === "no") {
+    } else if (message === "no_review") {
         response = "No problem! Thanks for visiting. Have a great day!";
         addMessage("Jay: " + response);
     } else if (message === "google" || message === "facebook") {
