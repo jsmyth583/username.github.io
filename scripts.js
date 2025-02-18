@@ -5,21 +5,23 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-function startChat() {
-    // Hide Start Button when clicked
-    document.getElementById("start-button").style.display = "none";
+let questionHistory = [];
 
-    // Show chat elements
+function startChat() {
+    document.getElementById("start-button").style.display = "none";
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
-
-    // Hide input box until needed
+    
     document.getElementById("user-input").style.display = "none";
     document.getElementById("send-button").style.display = "none";
 
-    // Ask the review location question immediately after clicking start
-    addMessage("Jay: Where would you like to leave your review?");
-    addButton([{ text: "Google", value: "google" }, { text: "Facebook", value: "facebook" }]);
+    askQuestion("Jay: Where would you like to leave your review?", [{ text: "Google", value: "google" }, { text: "Facebook", value: "facebook" }]);
+}
+
+function askQuestion(text, options) {
+    addMessage(text);
+    questionHistory.push({ text, options });
+    addButton(options);
 }
 
 function addMessage(text) {
@@ -30,11 +32,9 @@ function addMessage(text) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Ensure old buttons are removed before adding new ones
 function addButton(options) {
     let chatBox = document.getElementById("chat-box");
 
-    // Remove existing button container before adding new ones
     let oldButtons = document.querySelector(".button-container");
     if (oldButtons) {
         oldButtons.remove();
@@ -57,24 +57,32 @@ function addButton(options) {
         buttonContainer.appendChild(button);
     });
 
+    if (questionHistory.length > 1) {
+        let backButton = document.createElement("button");
+        backButton.textContent = "⬅ Go Back";
+        backButton.classList.add("chat-button");
+        backButton.onclick = function () {
+            questionHistory.pop();
+            let previousQuestion = questionHistory[questionHistory.length - 1];
+            askQuestion(previousQuestion.text, previousQuestion.options);
+        };
+        buttonContainer.appendChild(backButton);
+    }
+
     chatBox.appendChild(buttonContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 function jayResponse(message) {
-    let response = "";
-
     if (message === "google" || message === "facebook") {
-        response = `Please leave a review on ${message.charAt(0).toUpperCase() + message.slice(1)}. Once you've done that, upload a screenshot of your review here.`;
-        addMessage("Jay: " + response);
+        askQuestion(`Jay: Please leave a review on ${message.charAt(0).toUpperCase() + message.slice(1)}. Once you've done that, upload a screenshot of your review here.`, []);
         addFileUploadOption();
     }
 }
 
 function addFileUploadOption() {
     let chatBox = document.getElementById("chat-box");
-
-    // Remove existing upload container if present
+    
     let oldUpload = document.querySelector(".upload-container");
     if (oldUpload) {
         oldUpload.remove();
@@ -93,9 +101,10 @@ function addFileUploadOption() {
             addMessage("You uploaded: " + fileInput.files[0].name);
             chatBox.removeChild(uploadContainer);
             setTimeout(() => {
-                addMessage("Jay: Thank you! Now, please provide your Full Name.");
+                askQuestion("Jay: Thank you! To provide you with your Free Naan voucher, we need your Full Name and Email Address.", []);
                 document.getElementById("user-input").style.display = "block";
                 document.getElementById("send-button").style.display = "block";
+                document.getElementById("send-button").onclick = submitUserDetails;
             }, 1000);
         }
     });
@@ -103,4 +112,18 @@ function addFileUploadOption() {
     uploadContainer.appendChild(fileInput);
     chatBox.appendChild(uploadContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function submitUserDetails() {
+    let userInput = document.getElementById("user-input").value;
+    if (userInput.trim() !== "") {
+        addMessage("You: " + userInput);
+        document.getElementById("user-input").style.display = "none";
+        document.getElementById("send-button").style.display = "none";
+
+        setTimeout(() => {
+            addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.");
+            addMessage("Jay: We appreciate your support and hope to serve you again soon!");
+        }, 1000);
+    }
 }
