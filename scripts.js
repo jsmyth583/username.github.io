@@ -6,16 +6,14 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function startChat() {
-    // Hide Start Button
     document.getElementById("start-button").style.display = "none";
-
-    // Show Chat Elements
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
-    document.getElementById("user-input").style.display = "block";
-    document.getElementById("send-button").style.display = "block";
 
-    // Start the conversation properly (only ask once)
+    // Ensure input is hidden at the start
+    document.getElementById("user-input").style.display = "none";
+    document.getElementById("send-button").style.display = "none";
+
     addMessage("Jay: Hi, it's Jay from Green Chilli! Would you like to leave a review and receive a free Naan on your next order?");
     addButton([{ text: "Yes", value: "yes_review" }, { text: "No", value: "no_review" }]);
 }
@@ -28,8 +26,16 @@ function addMessage(text) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// Ensure old buttons are removed before adding new ones
 function addButton(options) {
     let chatBox = document.getElementById("chat-box");
+
+    // Remove existing button container before adding new ones
+    let oldButtons = document.querySelector(".button-container");
+    if (oldButtons) {
+        oldButtons.remove();
+    }
+
     let buttonContainer = document.createElement("div");
     buttonContainer.classList.add("button-container");
 
@@ -70,6 +76,13 @@ function jayResponse(message) {
 
 function addFileUploadOption() {
     let chatBox = document.getElementById("chat-box");
+
+    // Remove existing upload container if present
+    let oldUpload = document.querySelector(".upload-container");
+    if (oldUpload) {
+        oldUpload.remove();
+    }
+
     let uploadContainer = document.createElement("div");
     uploadContainer.classList.add("upload-container");
 
@@ -84,6 +97,8 @@ function addFileUploadOption() {
             chatBox.removeChild(uploadContainer);
             setTimeout(() => {
                 addMessage("Jay: Thank you! Now, please provide your Full Name.");
+                document.getElementById("user-input").style.display = "block";
+                document.getElementById("send-button").style.display = "block";
             }, 1000);
         }
     });
