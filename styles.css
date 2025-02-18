@@ -21,7 +21,7 @@ body {
 }
 
 #chat-header {
-    background: #0084FF;
+    background: #28A745;
     color: white;
     padding: 15px;
     text-align: center;
@@ -58,7 +58,7 @@ body {
 
 .user-message {
     align-self: flex-end;
-    background: #0084FF;
+    background: #28A745;
     color: white;
     border-radius: 18px 18px 5px 18px;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
@@ -75,7 +75,7 @@ body {
     padding: 10px 15px;
     border-radius: 20px;
     border: none;
-    background: #0084FF;
+    background: #28A745;
     color: white;
     cursor: pointer;
     font-size: 14px;
@@ -83,7 +83,7 @@ body {
 }
 
 .chat-button:hover {
-    background: #006ACC;
+    background: #218838;
 }
 
 .upload-container {
@@ -111,7 +111,7 @@ body {
     padding: 10px;
     border: none;
     border-radius: 15px;
-    background: #0084FF;
+    background: #28A745;
     color: white;
     cursor: pointer;
     font-size: 14px;
@@ -121,5 +121,22 @@ body {
 }
 
 #send-button:hover {
-    background: #006ACC;
+    background: #218838;
+}
+
+#start-button {
+    padding: 15px 20px;
+    font-size: 16px;
+    border-radius: 25px;
+    background: #28A745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    display: block;
+    margin: 20px auto;
+}
+
+#start-button:hover {
+    background: #218838;
 }
