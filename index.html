@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Chilli - Leave a Review and Get Rewarded!</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="chat-container">
+        <!-- Logo Above the Chatbot -->
+        <img src="green_chilli_logo.jpg" alt="Green Chilli Logo" id="business-logo">
+
+        <!-- Start Button -->
+        <button id="start-button" onclick="startChat()">Start</button>
+
+        <!-- Chat Header (Initially Hidden) -->
+        <div id="chat-header" style="display: none;">
+            Leave a Review & Get a Free Naan on Your Next Order!
+        </div>
+
+        <!-- Chat Box (Initially Hidden) -->
+        <div id="chat-box" style="display: none;"></div>
+
+        <input type="text" id="user-input" placeholder="Type here..." style="display: none;" onkeypress="if(event.key === 'Enter') sendMessage()">
+        <button id="send-button" onclick="sendMessage()" style="display: none;">Send</button>
+    </div>
+    
+    <script src="scripts.js"></script>
+</body>
+</html>
