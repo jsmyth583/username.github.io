@@ -1,0 +1,24 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Chilli - Leave a Review and Get Rewarded!</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-header">
+            Leave a Review & Get a Free Naan on Your Next Order!
+        </div>
+        <div id="chat-box"></div>
+        <div class="clearfix"></div>
+        <input type="text" id="user-input" placeholder="Type 'Yes' to leave a review and get your free Naan!" onkeypress="if(event.key === 'Enter') sendMessage()">
+        <button id="send-button" onclick="sendMessage()">Send</button>
+        <button id="scroll-button" onclick="scrollToBottom()">⬇</button>
+    </div>
+    
+    <script src="scripts.js"></script>
+</body>
+</html>
