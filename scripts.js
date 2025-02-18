@@ -1,3 +1,6 @@
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("start-button").addEventListener("click", startChat);
+});
 
 function startChat() {
     document.getElementById("start-button").style.display = "none";
@@ -78,3 +81,4 @@ function addFileUploadOption() {
     uploadContainer.appendChild(fileInput);
     chatBox.appendChild(uploadContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
+}
