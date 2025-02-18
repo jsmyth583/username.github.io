@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 let chatHistory = [];
+let waitingForEmail = false;
 
 function startChat() {
     document.getElementById("start-button").style.display = "none";
@@ -60,18 +61,6 @@ function addButton(options) {
         buttonContainer.appendChild(button);
     });
 
-    if (chatHistory.length > 1) {
-        let backButton = document.createElement("button");
-        backButton.textContent = "⬅ Go Back";
-        backButton.classList.add("chat-button");
-        backButton.onclick = function () {
-            chatHistory.pop();
-            let previousQuestion = chatHistory[chatHistory.length - 1];
-            askQuestion(previousQuestion.text, previousQuestion.options);
-        };
-        buttonContainer.appendChild(backButton);
-    }
-
     chatBox.appendChild(buttonContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
 }
@@ -103,10 +92,7 @@ function addFileUploadOption() {
             addMessage("You uploaded: " + fileInput.files[0].name, "user");
             chatBox.removeChild(uploadContainer);
             setTimeout(() => {
-                askQuestion("Jay: Thank you! To provide you with your Free Naan voucher, we need your Full Name and Email Address.", []);
-                document.getElementById("user-input").style.display = "block";
-                document.getElementById("send-button").style.display = "block";
-                document.getElementById("send-button").onclick = submitUserDetails;
+                askForName();
             }, 1000);
         }
     });
@@ -116,16 +102,33 @@ function addFileUploadOption() {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function submitUserDetails() {
-    let userInput = document.getElementById("user-input").value;
-    if (userInput.trim() !== "") {
-        addMessage("You: " + userInput, "user");
-        document.getElementById("user-input").style.display = "none";
-        document.getElementById("send-button").style.display = "none";
+function askForName() {
+    askQuestion("Jay: Thank you! Please provide your Full Name.", []);
+    document.getElementById("user-input").style.display = "block";
+    document.getElementById("send-button").style.display = "block";
+    document.getElementById("send-button").onclick = function () {
+        let userInput = document.getElementById("user-input").value;
+        if (userInput.trim() !== "") {
+            addMessage("You: " + userInput, "user");
+            document.getElementById("user-input").value = "";
+            setTimeout(() => {
+                askForEmail();
+            }, 1000);
+        }
+    };
+}
 
-        setTimeout(() => {
-            addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
-            addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
-        }, 1000);
-    }
+function askForEmail() {
+    askQuestion("Jay: Now, please provide your Email Address.", []);
+    document.getElementById("send-button").onclick = function () {
+        let userInput = document.getElementById("user-input").value;
+        if (userInput.trim() !== "") {
+            addMessage("You: " + userInput, "user");
+            document.getElementById("user-input").style.display = "none";
+            document.getElementById("send-button").style.display = "none";
+            setTimeout(() => {
+                addMessage("Jay: Thank you! Your voucher will be emailed within 12 hours. Check inbox/spam.", "bot");
+            }, 1000);
+        }
+    };
 }
