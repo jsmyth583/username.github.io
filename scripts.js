@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-let questionHistory = [];
+let chatHistory = [];
 
 function startChat() {
     document.getElementById("start-button").style.display = "none";
@@ -19,14 +19,15 @@ function startChat() {
 }
 
 function askQuestion(text, options) {
+    chatHistory.push({ text, options });
     addMessage(text);
-    questionHistory.push({ text, options });
     addButton(options);
 }
 
 function addMessage(text) {
     let chatBox = document.getElementById("chat-box");
-    let msg = document.createElement("p");
+    let msg = document.createElement("div");
+    msg.classList.add("chat-message");
     msg.textContent = text;
     chatBox.appendChild(msg);
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -57,13 +58,13 @@ function addButton(options) {
         buttonContainer.appendChild(button);
     });
 
-    if (questionHistory.length > 1) {
+    if (chatHistory.length > 1) {
         let backButton = document.createElement("button");
         backButton.textContent = "⬅ Go Back";
         backButton.classList.add("chat-button");
         backButton.onclick = function () {
-            questionHistory.pop();
-            let previousQuestion = questionHistory[questionHistory.length - 1];
+            chatHistory.pop();
+            let previousQuestion = chatHistory[chatHistory.length - 1];
             askQuestion(previousQuestion.text, previousQuestion.options);
         };
         buttonContainer.appendChild(backButton);
