@@ -1,20 +1,13 @@
 
-const chatBox = document.getElementById("chat-box");
-const userInput = document.getElementById("user-input");
-const sendButton = document.getElementById("send-button");
+function startChat() {
+    document.getElementById("start-button").style.display = "none";
+    document.getElementById("chat-header").style.display = "block";
+    document.getElementById("chat-box").style.display = "block";
+    document.getElementById("user-input").style.display = "block";
+    document.getElementById("send-button").style.display = "block";
 
-let state = 'initial'; // Track conversation state
-
-function sendMessage() {
-    let message = userInput.value.trim();
-    if (message === "") return;
-
-    addMessage("You: " + message);
-    userInput.value = "";
-
-    setTimeout(() => {
-        jayResponse(message);
-    }, 1000);
+    addMessage("Jay: Hi, it's Jay from Green Chilli! Would you like to leave a review and receive a free Naan on your next order?");
+    addButton([{ text: "Yes", value: "yes" }, { text: "No", value: "no" }]);
 }
 
 function addMessage(text) {
@@ -46,6 +39,23 @@ function addButton(options) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+function jayResponse(message) {
+    let response = "";
+
+    if (message === "yes") {
+        response = "Awesome! Where would you like to leave your review?";
+        addMessage("Jay: " + response);
+        addButton([{ text: "Google", value: "google" }, { text: "Facebook", value: "facebook" }]);
+    } else if (message === "no") {
+        response = "No problem! Thanks for visiting. Have a great day!";
+        addMessage("Jay: " + response);
+    } else if (message === "google" || message === "facebook") {
+        response = `Please leave a review on ${message.charAt(0).toUpperCase() + message.slice(1)}. Once you've done that, upload a screenshot of your review here.`;
+        addMessage("Jay: " + response);
+        addFileUploadOption();
+    }
+}
+
 function addFileUploadOption() {
     let uploadContainer = document.createElement("div");
     uploadContainer.classList.add("upload-container");
@@ -60,7 +70,7 @@ function addFileUploadOption() {
             addMessage("You uploaded: " + fileInput.files[0].name);
             chatBox.removeChild(uploadContainer);
             setTimeout(() => {
-                jayResponse("image_uploaded");
+                addMessage("Jay: Thank you! Now, please provide your Full Name.");
             }, 1000);
         }
     });
@@ -68,57 +78,3 @@ function addFileUploadOption() {
     uploadContainer.appendChild(fileInput);
     chatBox.appendChild(uploadContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function jayResponse(message) {
-    let response = "";
-
-    if (state === 'initial' || message.toLowerCase().includes("hi") || message.toLowerCase().includes("hello")) {
-        response = "Hi, it's Jay from Green Chilli! Would you like to leave a review and receive a free Naan on your next order?";
-        addMessage("Jay: " + response);
-        addButton([{ text: "Yes", value: "yes" }, { text: "No", value: "no" }]);
-        state = 'waitingForYesNo';
-    } else if (state === 'waitingForYesNo') {
-        if (message.toLowerCase() === "yes") {
-            response = "Awesome! Where would you like to leave your review?";
-            addMessage("Jay: " + response);
-            addButton([{ text: "Google", value: "google" }, { text: "Facebook", value: "facebook" }]);
-            state = 'waitingForPlatform';
-        } else {
-            response = "No problem! Thanks for visiting. Have a great day!";
-            addMessage("Jay: " + response);
-            state = 'end';
-        }
-    } else if (state === 'waitingForPlatform') {
-        if (message.toLowerCase() === "google") {
-            response = "Please leave a review on Google: [Google Review Link]. Once you've done that, upload a screenshot of your review here.";
-            addMessage("Jay: " + response);
-            addFileUploadOption();
-            state = 'waitingForScreenshot';
-        } else if (message.toLowerCase() === "facebook") {
-            response = "Please leave a review on Facebook: [Facebook Review Link]. Once you've done that, upload a screenshot of your review here.";
-            addMessage("Jay: " + response);
-            addFileUploadOption();
-            state = 'waitingForScreenshot';
-        } else {
-            response = "Please choose 'Google' or 'Facebook'.";
-            addMessage("Jay: " + response);
-        }
-    } else if (state === 'waitingForScreenshot' && message === "image_uploaded") {
-        response = "Thank you for your review! Have you uploaded the screenshot?";
-        addMessage("Jay: " + response);
-        addButton([{ text: "Yes", value: "yes_uploaded" }, { text: "No", value: "no_uploaded" }]);
-        state = 'waitingForScreenshotConfirmation';
-    } else if (state === 'waitingForScreenshotConfirmation' && message === "yes_uploaded") {
-        response = "Great! Now, please provide your Full Name.";
-        addMessage("Jay: " + response);
-        state = 'waitingForName';
-    } else if (state === 'waitingForName') {
-        response = "Thank you! Now, please provide your Email Address.";
-        addMessage("Jay: " + response);
-        state = 'waitingForEmail';
-    } else {
-        response = "I'm not sure what you mean. Please follow the steps in the conversation.";
-        addMessage("Jay: " + response);
-    }
-}
