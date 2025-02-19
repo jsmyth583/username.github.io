@@ -16,7 +16,10 @@ function startChat() {
     document.getElementById("send-button").style.display = "none";
     
     if (chatHistory.length === 0) {
-        askQuestion("Jay: Where would you like to leave your review?", [{ text: "Google", value: "google" }, { text: "Facebook", value: "facebook" }]);
+        askQuestion("Jay: Where would you like to leave your review?", [
+            { text: "Google", value: "google" }, 
+            { text: "Facebook", value: "facebook" }
+        ]);
     }
 }
 
@@ -66,8 +69,13 @@ function addButton(options) {
 }
 
 function jayResponse(message) {
-    if (message === "google" || message === "facebook") {
-        askQuestion(`Jay: Please leave a review on ${message.charAt(0).toUpperCase() + message.slice(1)}. Once you've done that, upload a screenshot of your review here.`, []);
+    if (message === "google") {
+        window.open("https://www.google.com/search?si=APYL9btvhO6SAb8jF9HqTZMMa7vs_teLnZaEVrJZwRKFIIKjodRXUogKEU2bVdvL0y6BSbe9z84OE12NsQZQHqkTnjEUvWFjl7T8y-U1rAVqVxo7oawY8bdwh9RTbXAynu-QMf4arewaQpxrkXWICZlwNkMdLC8XmA%3D%3D&hl=en-GB&q=green+chilli+bangor+reviews&shndl=30&shem=lcuae&source=sh/x/loc/osrp/m5/4&kgs=39464bd113bd8b85&zx=1739986110644&no_sw_cr=1#ebo=2", "_blank");
+        askQuestion("Jay: Once you've left your review, upload a screenshot here.", []);
+        addFileUploadOption();
+    } else if (message === "facebook") {
+        window.open("https://www.facebook.com/greenchillibangor/reviews/", "_blank");
+        askQuestion("Jay: Once you've left your review, upload a screenshot here.", []);
         addFileUploadOption();
     }
 }
@@ -127,7 +135,8 @@ function askForEmail() {
             document.getElementById("user-input").style.display = "none";
             document.getElementById("send-button").style.display = "none";
             setTimeout(() => {
-                addMessage("Jay: Thank you! Your voucher will be emailed within 12 hours. Check inbox/spam.", "bot");
+                addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
+                addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
             }, 1000);
         }
     };
