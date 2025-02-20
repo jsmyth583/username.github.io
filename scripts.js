@@ -21,6 +21,7 @@ function startChat() {
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
     
+    console.log("Starting chat... Displaying review options.");
     askQuestion("Jay: Where would you like to leave your review?", [
         { text: "Google", value: "google" },
         { text: "Facebook", value: "facebook" }
@@ -30,6 +31,7 @@ function startChat() {
 function askQuestion(text, options = []) {
     addMessage(text, "bot");
     if (options.length > 0) {
+        console.log("Adding buttons: ", options);
         addButton(options);
     }
     chatHistory.push({ text, options });
@@ -56,6 +58,7 @@ function addButton(options) {
         button.textContent = option.text;
         button.classList.add("chat-button");
         button.onclick = function () {
+            console.log("User selected: ", option.value);
             addMessage("You: " + option.text, "user");
             buttonContainer.remove();
             jayResponse(option.value);
@@ -72,6 +75,7 @@ function jayResponse(message) {
     sessionStorage.setItem("reviewPlatform", message);
     saveChatState();
     
+    console.log("Navigating to: ", message);
     if (message === "google") {
         window.open("https://www.google.com/search?q=green+chilli+bangor+reviews", "_blank");
     } else if (message === "facebook") {
