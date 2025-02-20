@@ -21,18 +21,16 @@ function startChat() {
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
     
-    setTimeout(() => {
-        askQuestion("Jay: Where would you like to leave your review?", [
-            { text: "Google", value: "google" },
-            { text: "Facebook", value: "facebook" }
-        ]);
-    }, 500);
+    askQuestion("Jay: Where would you like to leave your review?", [
+        { text: "Google", value: "google" },
+        { text: "Facebook", value: "facebook" }
+    ]);
 }
 
 function askQuestion(text, options = []) {
     addMessage(text, "bot");
     if (options.length > 0) {
-        setTimeout(() => addButton(options), 500);
+        addButton(options);
     }
     chatHistory.push({ text, options });
     saveChatState();
@@ -80,7 +78,7 @@ function jayResponse(message) {
         window.open("https://www.facebook.com/greenchillibangor/reviews/", "_blank");
     }
     
-    setTimeout(() => askForScreenshot(), 2000);
+    setTimeout(() => askForScreenshot(), 3000);
 }
 
 function askForScreenshot() {
