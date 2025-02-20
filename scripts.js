@@ -23,6 +23,7 @@ function startChat() {
     document.getElementById("start-button").style.display = "none";
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
+    
     askQuestion("Jay: Where would you like to leave your review?", [
         { text: "Google", value: "google" },
         { text: "Facebook", value: "facebook" }
@@ -31,7 +32,9 @@ function startChat() {
 
 function askQuestion(text, options) {
     addMessage(text, "bot");
-    addButton(options);
+    if (options.length > 0) {
+        addButton(options);
+    }
     chatHistory.push({ text, options });
     saveChatState();
 }
@@ -101,7 +104,7 @@ function jayResponse(message) {
         window.open("https://www.facebook.com/greenchillibangor/reviews/", "_blank");
     }
     
-    setTimeout(() => askForScreenshot(), 1000);
+    setTimeout(() => askForScreenshot(), 2000);
 }
 
 function askForScreenshot() {
@@ -166,4 +169,24 @@ function enableUserInput(nextStep) {
             }, 1000);
         }
     };
+}
+
+function saveChatState() {
+    sessionStorage.setItem("chatState", JSON.stringify(chatHistory));
+}
+
+function restoreChat() {
+    chatHistory = JSON.parse(sessionStorage.getItem("chatState")) || [];
+    let chatBox = document.getElementById("chat-box");
+    chatBox.innerHTML = "";
+    chatStarted = true;
+    document.getElementById("start-button").style.display = "none";
+    document.getElementById("chat-header").style.display = "block";
+    document.getElementById("chat-box").style.display = "block";
+
+    chatHistory.forEach(step => {
+        if (step.text) addMessage(step.text, "bot");
+        if (step.options) addButton(step.options);
+        if (step.userResponse) addMessage("You: " + step.userResponse, "user");
+    });
 }
