@@ -26,8 +26,10 @@ function startChat() {
 function askQuestion(text, options) {
     if (chatHistory.length === 0 || chatHistory[chatHistory.length - 1].text !== text) {
         chatHistory.push({ text, options });
-        addMessage(text, "bot");
-        addButton(options);
+        showTypingIndicator(() => {
+            addMessage(text, "bot");
+            addButton(options);
+        });
     }
 }
 
@@ -110,34 +112,16 @@ function addFileUploadOption() {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function askForName() {
-    askQuestion("Jay: Thank you! Please provide your Full Name.", []);
-    document.getElementById("user-input").style.display = "block";
-    document.getElementById("send-button").style.display = "block";
-    document.getElementById("send-button").onclick = function () {
-        let userInput = document.getElementById("user-input").value;
-        if (userInput.trim() !== "") {
-            addMessage("You: " + userInput, "user");
-            document.getElementById("user-input").value = "";
-            setTimeout(() => {
-                askForEmail();
-            }, 1000);
-        }
-    };
-}
+function showTypingIndicator(callback) {
+    let chatBox = document.getElementById("chat-box");
+    let typingIndicator = document.createElement("div");
+    typingIndicator.classList.add("typing-indicator");
+    typingIndicator.textContent = "Jay is typing...";
+    chatBox.appendChild(typingIndicator);
+    chatBox.scrollTop = chatBox.scrollHeight;
 
-function askForEmail() {
-    askQuestion("Jay: Now, please provide your Email Address.", []);
-    document.getElementById("send-button").onclick = function () {
-        let userInput = document.getElementById("user-input").value;
-        if (userInput.trim() !== "") {
-            addMessage("You: " + userInput, "user");
-            document.getElementById("user-input").style.display = "none";
-            document.getElementById("send-button").style.display = "none";
-            setTimeout(() => {
-                addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
-                addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
-            }, 1000);
-        }
-    };
+    setTimeout(() => {
+        chatBox.removeChild(typingIndicator);
+        callback();
+    }, 1000);
 }
