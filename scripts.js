@@ -45,16 +45,36 @@ function startChat() {
     ]);
 }
 
-function askQuestion(text, options = [], callback = null) {
+function askQuestion(text, options = []) {
     addMessage(text, "bot");
     if (options.length > 0) {
         console.log("Adding buttons: ", options);
         addButton(options);
-    } else if (callback) {
-        enableUserInput(callback);
+    } else {
+        enableUserInput();
     }
     chatHistory.push({ text, options });
     saveChatState();
+}
+
+function enableUserInput(nextStep) {
+    let userInput = document.getElementById("user-input");
+    let sendButton = document.getElementById("send-button");
+    
+    userInput.style.display = "block";
+    sendButton.style.display = "block";
+    userInput.focus();
+    
+    sendButton.onclick = function () {
+        let inputText = userInput.value.trim();
+        if (inputText) {
+            addMessage("You: " + inputText, "user");
+            userInput.value = "";
+            userInput.style.display = "none";
+            sendButton.style.display = "none";
+            if (nextStep) nextStep(inputText);
+        }
+    };
 }
 
 function addMessage(text, sender) {
@@ -88,24 +108,6 @@ function addButton(options) {
     chatBox.appendChild(buttonContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
     saveChatState();
-}
-
-function enableUserInput(nextFunction) {
-    let inputField = document.getElementById("user-input");
-    inputField.style.display = "block";
-    inputField.disabled = false;
-    inputField.focus();
-    
-    document.getElementById("send-button").onclick = function () {
-        let userInput = inputField.value.trim();
-        if (userInput !== "") {
-            addMessage("You: " + userInput, "user");
-            inputField.value = "";
-            inputField.style.display = "none";
-            inputField.disabled = true;
-            nextFunction(userInput);
-        }
-    };
 }
 
 function jayResponse(message) {
@@ -142,7 +144,7 @@ function addFileUploadOption() {
             addMessage("You uploaded: " + fileInput.files[0].name, "user");
             uploadContainer.remove();
             setTimeout(() => {
-                askQuestion("Jay: Thank you! Please provide your Full Name.", [], askForEmail);
+                askForName();
             }, 1000);
         }
     });
@@ -153,12 +155,18 @@ function addFileUploadOption() {
     saveChatState();
 }
 
-function askForEmail(name) {
-    askQuestion("Jay: Now, please provide your Email Address.", [], finalizeProcess);
+function askForName() {
+    askQuestion("Jay: Thank you! Please provide your Full Name.", askForEmail);
 }
 
-function finalizeProcess(email) {
-    addMessage("Jay: Thank you, " + email + "! Your review will be validated, and your voucher will be emailed to you within 12 hours. Please check your inbox/spam folder.", "bot");
+function askForEmail(name) {
+    sessionStorage.setItem("userName", name);
+    askQuestion("Jay: Now, please provide your Email Address.", finalThankYou);
+}
+
+function finalThankYou(email) {
+    sessionStorage.setItem("userEmail", email);
+    addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
     addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
     saveChatState();
 }
