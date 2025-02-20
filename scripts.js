@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 let chatStarted = false;
 let chatHistory = [];
-let rewards = ["Free Naan", "10% Off Next Order", "Free Drink", "Free Side Dish"];
 
 function saveChatState() {
     sessionStorage.setItem("chatState", JSON.stringify(chatHistory));
@@ -38,17 +37,15 @@ function startChat() {
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
     
-    console.log("Starting chat... Displaying review options.");
     askQuestion("Jay: Where would you like to leave your review?", [
         { text: "Google", value: "google" },
         { text: "Facebook", value: "facebook" }
-    ], jayResponse);
+    ], handleReviewPlatform);
 }
 
 function askQuestion(text, options = [], callback = null) {
     addMessage(text, "bot");
     if (options.length > 0) {
-        console.log("Adding buttons: ", options);
         addButton(options, callback);
     } else {
         enableUserInput(callback);
@@ -97,7 +94,6 @@ function addButton(options, callback) {
         button.textContent = option.text;
         button.classList.add("chat-button");
         button.onclick = function () {
-            console.log("User selected: ", option.value);
             addMessage("You: " + option.text, "user");
             buttonContainer.remove();
             if (callback) callback(option.value);
@@ -110,11 +106,10 @@ function addButton(options, callback) {
     saveChatState();
 }
 
-function jayResponse(platform) {
+function handleReviewPlatform(platform) {
     sessionStorage.setItem("reviewPlatform", platform);
     saveChatState();
     
-    console.log("Navigating to: ", platform);
     if (platform === "google") {
         window.open("https://www.google.com/search?q=green+chilli+bangor+reviews", "_blank");
     } else if (platform === "facebook") {
