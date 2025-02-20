@@ -121,11 +121,35 @@ function jayResponse(platform) {
         window.open("https://www.facebook.com/greenchillibangor/reviews/", "_blank");
     }
     
-    setTimeout(() => askForScreenshot(), 3000);
+    setTimeout(() => askForScreenshot(), 5000);
 }
 
 function askForScreenshot() {
-    askQuestion("Jay: Once you've left your review, upload a screenshot here.", [], askForName);
+    askQuestion("Jay: Once you've left your review, please upload a screenshot here.", [], enableFileUpload);
+}
+
+function enableFileUpload() {
+    let chatBox = document.getElementById("chat-box");
+    let uploadContainer = document.createElement("div");
+    uploadContainer.classList.add("upload-container");
+
+    let fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.classList.add("file-input");
+
+    fileInput.addEventListener("change", function () {
+        if (fileInput.files.length > 0) {
+            addMessage("You uploaded: " + fileInput.files[0].name, "user");
+            uploadContainer.remove();
+            setTimeout(() => askForName(), 2000);
+        }
+    });
+    
+    uploadContainer.appendChild(fileInput);
+    chatBox.appendChild(uploadContainer);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    saveChatState();
 }
 
 function askForName() {
