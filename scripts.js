@@ -13,6 +13,23 @@ let chatStarted = false;
 let chatHistory = [];
 let rewards = ["Free Naan", "10% Off Next Order", "Free Drink", "Free Side Dish"];
 
+function saveChatState() {
+    sessionStorage.setItem("chatState", JSON.stringify(chatHistory));
+}
+
+function restoreChat() {
+    let savedChat = sessionStorage.getItem("chatState");
+    if (savedChat) {
+        chatHistory = JSON.parse(savedChat);
+        chatHistory.forEach(entry => {
+            addMessage(entry.text, "bot");
+            if (entry.options.length > 0) {
+                addButton(entry.options);
+            }
+        });
+    }
+}
+
 function startChat() {
     if (chatStarted) return;
     chatStarted = true;
