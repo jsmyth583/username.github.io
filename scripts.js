@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 let chatStarted = false;
 let chatHistory = [];
+let rewards = ["Free Naan", "10% Off Next Order", "Free Drink", "Free Side Dish"];
 
 function startChat() {
     if (chatStarted) return;
@@ -23,7 +24,6 @@ function startChat() {
     document.getElementById("start-button").style.display = "none";
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
-    
     askQuestion("Jay: Where would you like to leave your review?", [
         { text: "Google", value: "google" },
         { text: "Facebook", value: "facebook" }
@@ -67,31 +67,9 @@ function addButton(options) {
         buttonContainer.appendChild(button);
     });
 
-    let backButton = document.createElement("button");
-    backButton.textContent = "← Go Back";
-    backButton.classList.add("chat-button", "back-button");
-    backButton.onclick = function () {
-        goBack();
-    };
-    buttonContainer.appendChild(backButton);
-    
     chatBox.appendChild(buttonContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
     saveChatState();
-}
-
-function goBack() {
-    if (chatHistory.length > 1) {
-        chatHistory.pop(); 
-        let lastStep = chatHistory[chatHistory.length - 1];
-        document.getElementById("chat-box").innerHTML = "";
-        chatHistory.forEach(step => {
-            if (step.text) addMessage(step.text, "bot");
-            if (step.options) addButton(step.options);
-            if (step.userResponse) addMessage("You: " + step.userResponse, "user");
-        });
-        saveChatState();
-    }
 }
 
 function jayResponse(message) {
@@ -145,48 +123,49 @@ function askForName() {
 
 function askForEmail() {
     askQuestion("Jay: Now, please provide your Email Address.", []);
-    enableUserInput(finalThankYou);
+    enableUserInput(spinForReward);
 }
 
-function finalThankYou() {
-    addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
+function spinForReward() {
+    askQuestion("Jay: Now it's time to spin for your reward! Click the button below.", []);
+    addSpinButton();
+}
+
+function addSpinButton() {
+    let chatBox = document.getElementById("chat-box");
+    let spinButton = document.createElement("button");
+    spinButton.textContent = "🎰 Spin for Your Reward";
+    spinButton.classList.add("chat-button");
+    spinButton.onclick = function () {
+        spinButton.remove();
+        startSlotMachine();
+    };
+    chatBox.appendChild(spinButton);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function startSlotMachine() {
+    let chatBox = document.getElementById("chat-box");
+    let slotMachine = document.createElement("div");
+    slotMachine.classList.add("slot-machine");
+    chatBox.appendChild(slotMachine);
+    
+    let spins = 10;
+    let interval = setInterval(() => {
+        slotMachine.textContent = rewards[Math.floor(Math.random() * rewards.length)];
+        spins--;
+        if (spins === 0) {
+            clearInterval(interval);
+            let finalReward = rewards[Math.floor(Math.random() * rewards.length)];
+            slotMachine.textContent = "🎉 " + finalReward + "!";
+            setTimeout(() => finalThankYou(finalReward), 2000);
+        }
+    }, 200);
+}
+
+function finalThankYou(reward) {
+    addMessage("Jay: Congratulations! You've won " + reward + "!", "bot");
+    addMessage("Jay: Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
     addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
     saveChatState();
-}
-
-function enableUserInput(nextStep) {
-    document.getElementById("user-input").style.display = "block";
-    document.getElementById("send-button").style.display = "block";
-    document.getElementById("send-button").onclick = function () {
-        let userInput = document.getElementById("user-input").value;
-        if (userInput.trim() !== "") {
-            addMessage("You: " + userInput, "user");
-            document.getElementById("user-input").value = "";
-            document.getElementById("user-input").style.display = "none";
-            document.getElementById("send-button").style.display = "none";
-            setTimeout(() => {
-                nextStep();
-            }, 1000);
-        }
-    };
-}
-
-function saveChatState() {
-    sessionStorage.setItem("chatState", JSON.stringify(chatHistory));
-}
-
-function restoreChat() {
-    chatHistory = JSON.parse(sessionStorage.getItem("chatState")) || [];
-    let chatBox = document.getElementById("chat-box");
-    chatBox.innerHTML = "";
-    chatStarted = true;
-    document.getElementById("start-button").style.display = "none";
-    document.getElementById("chat-header").style.display = "block";
-    document.getElementById("chat-box").style.display = "block";
-
-    chatHistory.forEach(step => {
-        if (step.text) addMessage(step.text, "bot");
-        if (step.options) addButton(step.options);
-        if (step.userResponse) addMessage("You: " + step.userResponse, "user");
-    });
 }
