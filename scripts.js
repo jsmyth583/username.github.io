@@ -32,7 +32,7 @@ function startChat() {
 function askQuestion(text, options = []) {
     addMessage(text, "bot");
     if (options.length > 0) {
-        setTimeout(() => addButton(options), 300);
+        setTimeout(() => addButton(options), 500);
     }
     chatHistory.push({ text, options });
     saveChatState();
