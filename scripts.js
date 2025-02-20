@@ -24,7 +24,7 @@ function restoreChat() {
         chatHistory.forEach(entry => {
             addMessage(entry.text, "bot");
             if (entry.options.length > 0) {
-                addButton(entry.options);
+                addButton(entry.options, entry.callback);
             }
         });
     }
@@ -42,7 +42,7 @@ function startChat() {
     askQuestion("Jay: Where would you like to leave your review?", [
         { text: "Google", value: "google" },
         { text: "Facebook", value: "facebook" }
-    ]);
+    ], jayResponse);
 }
 
 function askQuestion(text, options = [], callback = null) {
@@ -53,7 +53,7 @@ function askQuestion(text, options = [], callback = null) {
     } else {
         enableUserInput(callback);
     }
-    chatHistory.push({ text, options });
+    chatHistory.push({ text, options, callback });
     saveChatState();
 }
 
@@ -110,14 +110,14 @@ function addButton(options, callback) {
     saveChatState();
 }
 
-function jayResponse(message) {
-    sessionStorage.setItem("reviewPlatform", message);
+function jayResponse(platform) {
+    sessionStorage.setItem("reviewPlatform", platform);
     saveChatState();
     
-    console.log("Navigating to: ", message);
-    if (message === "google") {
+    console.log("Navigating to: ", platform);
+    if (platform === "google") {
         window.open("https://www.google.com/search?q=green+chilli+bangor+reviews", "_blank");
-    } else if (message === "facebook") {
+    } else if (platform === "facebook") {
         window.open("https://www.facebook.com/greenchillibangor/reviews/", "_blank");
     }
     
