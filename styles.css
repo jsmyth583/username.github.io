@@ -18,6 +18,12 @@ body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
 }
 
 #chat-header {
@@ -27,6 +33,12 @@ body {
     text-align: center;
     font-size: 18px;
     font-weight: bold;
+    animation: slideIn 0.5s ease-in-out;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 #chat-box {
@@ -38,6 +50,7 @@ body {
     gap: 10px;
     background-color: #E4E6EB;
     max-height: 400px;
+    transition: all 0.3s ease-in-out;
 }
 
 .chat-message {
@@ -46,6 +59,12 @@ body {
     max-width: 75%;
     font-size: 14px;
     word-wrap: break-word;
+    animation: messageFade 0.3s ease-in-out;
+}
+
+@keyframes messageFade {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .bot-message {
@@ -105,6 +124,7 @@ body {
     width: calc(100% - 30px);
     margin: 10px;
     font-size: 14px;
+    transition: all 0.3s ease-in-out;
 }
 
 #send-button {
@@ -126,7 +146,7 @@ body {
 
 #start-button {
     padding: 15px 20px;
-    font-size: 16px;
+    font-size: 18px;
     border-radius: 25px;
     background: #28A745;
     color: white;
@@ -135,8 +155,25 @@ body {
     font-weight: bold;
     display: block;
     margin: 20px auto;
+    transition: transform 0.2s ease-in-out;
+    animation: bounceIn 0.5s ease-in-out;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); }
 }
 
 #start-button:hover {
     background: #218838;
+    transform: scale(1.05);
+}
+
+.typing-indicator {
+    display: none;
+    font-size: 14px;
+    color: gray;
+    padding: 10px;
+    font-style: italic;
 }
