@@ -45,11 +45,13 @@ function startChat() {
     ]);
 }
 
-function askQuestion(text, options = []) {
+function askQuestion(text, options = [], callback = null) {
     addMessage(text, "bot");
     if (options.length > 0) {
         console.log("Adding buttons: ", options);
         addButton(options);
+    } else if (callback) {
+        enableUserInput(callback);
     }
     chatHistory.push({ text, options });
     saveChatState();
@@ -88,6 +90,24 @@ function addButton(options) {
     saveChatState();
 }
 
+function enableUserInput(nextFunction) {
+    let inputField = document.getElementById("user-input");
+    inputField.style.display = "block";
+    inputField.disabled = false;
+    inputField.focus();
+    
+    document.getElementById("send-button").onclick = function () {
+        let userInput = inputField.value.trim();
+        if (userInput !== "") {
+            addMessage("You: " + userInput, "user");
+            inputField.value = "";
+            inputField.style.display = "none";
+            inputField.disabled = true;
+            nextFunction(userInput);
+        }
+    };
+}
+
 function jayResponse(message) {
     sessionStorage.setItem("reviewPlatform", message);
     saveChatState();
@@ -122,7 +142,7 @@ function addFileUploadOption() {
             addMessage("You uploaded: " + fileInput.files[0].name, "user");
             uploadContainer.remove();
             setTimeout(() => {
-                askForName();
+                askQuestion("Jay: Thank you! Please provide your Full Name.", [], askForEmail);
             }, 1000);
         }
     });
@@ -133,56 +153,12 @@ function addFileUploadOption() {
     saveChatState();
 }
 
-function askForName() {
-    askQuestion("Jay: Thank you! Please provide your Full Name.");
-    enableUserInput(askForEmail);
+function askForEmail(name) {
+    askQuestion("Jay: Now, please provide your Email Address.", [], finalizeProcess);
 }
 
-function askForEmail() {
-    askQuestion("Jay: Now, please provide your Email Address.");
-    enableUserInput(spinForReward);
-}
-
-function spinForReward() {
-    askQuestion("Jay: Now it's time to spin for your reward! Click the button below.");
-    addSpinButton();
-}
-
-function addSpinButton() {
-    let chatBox = document.getElementById("chat-box");
-    let spinButton = document.createElement("button");
-    spinButton.textContent = "🎰 Spin for Your Reward";
-    spinButton.classList.add("chat-button");
-    spinButton.onclick = function () {
-        spinButton.remove();
-        startSlotMachine();
-    };
-    chatBox.appendChild(spinButton);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function startSlotMachine() {
-    let chatBox = document.getElementById("chat-box");
-    let slotMachine = document.createElement("div");
-    slotMachine.classList.add("slot-machine");
-    chatBox.appendChild(slotMachine);
-    
-    let spins = 10;
-    let interval = setInterval(() => {
-        slotMachine.textContent = rewards[Math.floor(Math.random() * rewards.length)];
-        spins--;
-        if (spins === 0) {
-            clearInterval(interval);
-            let finalReward = rewards[Math.floor(Math.random() * rewards.length)];
-            slotMachine.textContent = "🎉 " + finalReward + "!";
-            setTimeout(() => finalThankYou(finalReward), 2000);
-        }
-    }, 200);
-}
-
-function finalThankYou(reward) {
-    addMessage("Jay: Congratulations! You've won " + reward + "!", "bot");
-    addMessage("Jay: Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
+function finalizeProcess(email) {
+    addMessage("Jay: Thank you, " + email + "! Your review will be validated, and your voucher will be emailed to you within 12 hours. Please check your inbox/spam folder.", "bot");
     addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
     saveChatState();
 }
