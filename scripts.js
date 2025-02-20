@@ -24,13 +24,10 @@ function startChat() {
 }
 
 function askQuestion(text, options) {
-    if (chatHistory.length === 0 || chatHistory[chatHistory.length - 1].text !== text) {
-        chatHistory.push({ text, options });
-        showTypingIndicator(() => {
-            addMessage(text, "bot");
-            addButton(options);
-        });
-    }
+    showTypingIndicator(() => {
+        addMessage(text, "bot");
+        addButton(options);
+    });
 }
 
 function addMessage(text, sender) {
@@ -44,51 +41,43 @@ function addMessage(text, sender) {
 
 function addButton(options) {
     let chatBox = document.getElementById("chat-box");
-    let oldButtons = document.querySelector(".button-container");
-    if (oldButtons) {
-        oldButtons.remove();
-    }
-
     let buttonContainer = document.createElement("div");
     buttonContainer.classList.add("button-container");
-
+    
     options.forEach(option => {
         let button = document.createElement("button");
         button.textContent = option.text;
         button.classList.add("chat-button");
         button.onclick = function () {
             addMessage("You: " + option.text, "user");
-            chatBox.removeChild(buttonContainer);
+            buttonContainer.remove();
             setTimeout(() => {
                 jayResponse(option.value);
             }, 1000);
         };
         buttonContainer.appendChild(button);
     });
-
     chatBox.appendChild(buttonContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 function jayResponse(message) {
     if (message === "google") {
-        window.open("https://www.google.com/search?si=APYL9btvhO6SAb8jF9HqTZMMa7vs_teLnZaEVrJZwRKFIIKjodRXUogKEU2bVdvL0y6BSbe9z84OE12NsQZQHqkTnjEUvWFjl7T8y-U1rAVqVxo7oawY8bdwh9RTbXAynu-QMf4arewaQpxrkXWICZlwNkMdLC8XmA%3D%3D&hl=en-GB&q=green+chilli+bangor+reviews&shndl=30&shem=lcuae&source=sh/x/loc/osrp/m5/4&kgs=39464bd113bd8b85&zx=1739986110644&no_sw_cr=1#ebo=2", "_blank");
-        askQuestion("Jay: Once you've left your review, upload a screenshot here.", []);
-        addFileUploadOption();
+        window.open("https://www.google.com/search?q=green+chilli+bangor+reviews", "_blank");
+        askForScreenshot();
     } else if (message === "facebook") {
         window.open("https://www.facebook.com/greenchillibangor/reviews/", "_blank");
-        askQuestion("Jay: Once you've left your review, upload a screenshot here.", []);
-        addFileUploadOption();
+        askForScreenshot();
     }
+}
+
+function askForScreenshot() {
+    askQuestion("Jay: Once you've left your review, upload a screenshot here.", []);
+    addFileUploadOption();
 }
 
 function addFileUploadOption() {
     let chatBox = document.getElementById("chat-box");
-    let oldUpload = document.querySelector(".upload-container");
-    if (oldUpload) {
-        oldUpload.remove();
-    }
-
     let uploadContainer = document.createElement("div");
     uploadContainer.classList.add("upload-container");
 
@@ -100,16 +89,50 @@ function addFileUploadOption() {
     fileInput.addEventListener("change", function () {
         if (fileInput.files.length > 0) {
             addMessage("You uploaded: " + fileInput.files[0].name, "user");
-            chatBox.removeChild(uploadContainer);
+            uploadContainer.remove();
             setTimeout(() => {
                 askForName();
             }, 1000);
         }
     });
-
+    
     uploadContainer.appendChild(fileInput);
     chatBox.appendChild(uploadContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function askForName() {
+    askQuestion("Jay: Thank you! Please provide your Full Name.", []);
+    enableUserInput(askForEmail);
+}
+
+function askForEmail() {
+    askQuestion("Jay: Now, please provide your Email Address.", []);
+    enableUserInput(finalThankYou);
+}
+
+function finalThankYou() {
+    showTypingIndicator(() => {
+        addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
+        addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
+    });
+}
+
+function enableUserInput(nextStep) {
+    document.getElementById("user-input").style.display = "block";
+    document.getElementById("send-button").style.display = "block";
+    document.getElementById("send-button").onclick = function () {
+        let userInput = document.getElementById("user-input").value;
+        if (userInput.trim() !== "") {
+            addMessage("You: " + userInput, "user");
+            document.getElementById("user-input").value = "";
+            document.getElementById("user-input").style.display = "none";
+            document.getElementById("send-button").style.display = "none";
+            setTimeout(() => {
+                nextStep();
+            }, 1000);
+        }
+    };
 }
 
 function showTypingIndicator(callback) {
@@ -124,4 +147,3 @@ function showTypingIndicator(callback) {
         chatBox.removeChild(typingIndicator);
         callback();
     }, 1000);
-}
