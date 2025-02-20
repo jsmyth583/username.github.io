@@ -9,12 +9,12 @@ let chatHistory = [];
 let waitingForEmail = false;
 
 function startChat() {
+    console.log("startChat function triggered!");
     document.getElementById("start-button").style.display = "none";
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
-    document.getElementById("user-input").style.display = "none";
-    document.getElementById("send-button").style.display = "none";
-    
+}
+
     if (chatHistory.length === 0) {
         askQuestion("Jay: Where would you like to leave your review?", [
             { text: "Google", value: "google" }, 
