@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 let chatStarted = false;
+let chatHistory = [];
 
 function startChat() {
     if (chatStarted) return;
@@ -31,6 +32,7 @@ function startChat() {
 function askQuestion(text, options) {
     addMessage(text, "bot");
     addButton(options);
+    chatHistory.push({ text, options });
     saveChatState();
 }
 
@@ -56,14 +58,37 @@ function addButton(options) {
         button.onclick = function () {
             addMessage("You: " + option.text, "user");
             buttonContainer.remove();
+            chatHistory.push({ userResponse: option.value });
             jayResponse(option.value);
         };
         buttonContainer.appendChild(button);
     });
 
+    let backButton = document.createElement("button");
+    backButton.textContent = "← Go Back";
+    backButton.classList.add("chat-button", "back-button");
+    backButton.onclick = function () {
+        goBack();
+    };
+    buttonContainer.appendChild(backButton);
+    
     chatBox.appendChild(buttonContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
     saveChatState();
+}
+
+function goBack() {
+    if (chatHistory.length > 1) {
+        chatHistory.pop(); 
+        let lastStep = chatHistory[chatHistory.length - 1];
+        document.getElementById("chat-box").innerHTML = "";
+        chatHistory.forEach(step => {
+            if (step.text) addMessage(step.text, "bot");
+            if (step.options) addButton(step.options);
+            if (step.userResponse) addMessage("You: " + step.userResponse, "user");
+        });
+        saveChatState();
+    }
 }
 
 function jayResponse(message) {
@@ -110,49 +135,22 @@ function addFileUploadOption() {
     saveChatState();
 }
 
-function askForName() {
-    askQuestion("Jay: Thank you! Please provide your Full Name.", []);
-    enableUserInput(askForEmail);
-}
-
-function askForEmail() {
-    askQuestion("Jay: Now, please provide your Email Address.", []);
-    enableUserInput(finalThankYou);
-}
-
-function finalThankYou() {
-    addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
-    addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
-    saveChatState();
-}
-
-function enableUserInput(nextStep) {
-    document.getElementById("user-input").style.display = "block";
-    document.getElementById("send-button").style.display = "block";
-    document.getElementById("send-button").onclick = function () {
-        let userInput = document.getElementById("user-input").value;
-        if (userInput.trim() !== "") {
-            addMessage("You: " + userInput, "user");
-            document.getElementById("user-input").value = "";
-            document.getElementById("user-input").style.display = "none";
-            document.getElementById("send-button").style.display = "none";
-            setTimeout(() => {
-                nextStep();
-            }, 1000);
-        }
-    };
-}
-
 function saveChatState() {
-    let chatBox = document.getElementById("chat-box").innerHTML;
-    sessionStorage.setItem("chatState", chatBox);
+    sessionStorage.setItem("chatState", JSON.stringify(chatHistory));
 }
 
 function restoreChat() {
+    chatHistory = JSON.parse(sessionStorage.getItem("chatState")) || [];
     let chatBox = document.getElementById("chat-box");
-    chatBox.innerHTML = sessionStorage.getItem("chatState");
+    chatBox.innerHTML = "";
     chatStarted = true;
     document.getElementById("start-button").style.display = "none";
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
+
+    chatHistory.forEach(step => {
+        if (step.text) addMessage(step.text, "bot");
+        if (step.options) addButton(step.options);
+        if (step.userResponse) addMessage("You: " + step.userResponse, "user");
+    });
 }
