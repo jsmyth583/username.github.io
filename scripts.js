@@ -8,7 +8,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+let chatStarted = false;
+
 function startChat() {
+    if (chatStarted) return;
+    chatStarted = true;
+    
     console.log("startChat function triggered!");
     document.getElementById("start-button").style.display = "none";
     document.getElementById("chat-header").style.display = "block";
@@ -20,6 +25,10 @@ function startChat() {
 }
 
 function askQuestion(text, options) {
+    let chatBox = document.getElementById("chat-box");
+    let existingMessages = Array.from(chatBox.getElementsByClassName("bot-message"));
+    if (existingMessages.some(msg => msg.textContent === text)) return;
+    
     addMessage(text, "bot");
     addButton(options);
 }
@@ -37,7 +46,7 @@ function addButton(options) {
     let chatBox = document.getElementById("chat-box");
     let buttonContainer = document.createElement("div");
     buttonContainer.classList.add("button-container");
-
+    
     options.forEach(option => {
         let button = document.createElement("button");
         button.textContent = option.text;
