@@ -45,13 +45,13 @@ function startChat() {
     ]);
 }
 
-function askQuestion(text, options = []) {
+function askQuestion(text, options = [], callback = null) {
     addMessage(text, "bot");
     if (options.length > 0) {
         console.log("Adding buttons: ", options);
-        addButton(options);
+        addButton(options, callback);
     } else {
-        enableUserInput();
+        enableUserInput(callback);
     }
     chatHistory.push({ text, options });
     saveChatState();
@@ -87,7 +87,7 @@ function addMessage(text, sender) {
     saveChatState();
 }
 
-function addButton(options) {
+function addButton(options, callback) {
     let chatBox = document.getElementById("chat-box");
     let buttonContainer = document.createElement("div");
     buttonContainer.classList.add("button-container");
@@ -100,7 +100,7 @@ function addButton(options) {
             console.log("User selected: ", option.value);
             addMessage("You: " + option.text, "user");
             buttonContainer.remove();
-            jayResponse(option.value);
+            if (callback) callback(option.value);
         };
         buttonContainer.appendChild(button);
     });
@@ -125,43 +125,16 @@ function jayResponse(message) {
 }
 
 function askForScreenshot() {
-    askQuestion("Jay: Once you've left your review, upload a screenshot here.");
-    addFileUploadOption();
-}
-
-function addFileUploadOption() {
-    let chatBox = document.getElementById("chat-box");
-    let uploadContainer = document.createElement("div");
-    uploadContainer.classList.add("upload-container");
-
-    let fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.classList.add("file-input");
-
-    fileInput.addEventListener("change", function () {
-        if (fileInput.files.length > 0) {
-            addMessage("You uploaded: " + fileInput.files[0].name, "user");
-            uploadContainer.remove();
-            setTimeout(() => {
-                askForName();
-            }, 1000);
-        }
-    });
-    
-    uploadContainer.appendChild(fileInput);
-    chatBox.appendChild(uploadContainer);
-    chatBox.scrollTop = chatBox.scrollHeight;
-    saveChatState();
+    askQuestion("Jay: Once you've left your review, upload a screenshot here.", [], askForName);
 }
 
 function askForName() {
-    askQuestion("Jay: Thank you! Please provide your Full Name.", askForEmail);
+    askQuestion("Jay: Thank you! Please provide your Full Name.", [], askForEmail);
 }
 
 function askForEmail(name) {
     sessionStorage.setItem("userName", name);
-    askQuestion("Jay: Now, please provide your Email Address.", finalThankYou);
+    askQuestion("Jay: Now, please provide your Email Address.", [], finalThankYou);
 }
 
 function finalThankYou(email) {
