@@ -1,10 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     let startButton = document.getElementById("start-button");
     if (startButton) {
-        console.log("Start button found and event listener added.");
         startButton.addEventListener("click", startChat);
-    } else {
-        console.log("Start button NOT found! Check your index.html file.");
     }
 
     if (sessionStorage.getItem("chatState")) {
@@ -20,17 +17,17 @@ function startChat() {
     if (chatStarted) return;
     chatStarted = true;
     
-    console.log("startChat function triggered!");
     document.getElementById("start-button").style.display = "none";
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
+    
     askQuestion("Jay: Where would you like to leave your review?", [
         { text: "Google", value: "google" },
         { text: "Facebook", value: "facebook" }
     ]);
 }
 
-function askQuestion(text, options) {
+function askQuestion(text, options = []) {
     addMessage(text, "bot");
     if (options.length > 0) {
         addButton(options);
@@ -61,12 +58,11 @@ function addButton(options) {
         button.onclick = function () {
             addMessage("You: " + option.text, "user");
             buttonContainer.remove();
-            chatHistory.push({ userResponse: option.value });
             jayResponse(option.value);
         };
         buttonContainer.appendChild(button);
     });
-
+    
     chatBox.appendChild(buttonContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
     saveChatState();
@@ -86,7 +82,7 @@ function jayResponse(message) {
 }
 
 function askForScreenshot() {
-    askQuestion("Jay: Once you've left your review, upload a screenshot here.", []);
+    askQuestion("Jay: Once you've left your review, upload a screenshot here.");
     addFileUploadOption();
 }
 
@@ -117,17 +113,17 @@ function addFileUploadOption() {
 }
 
 function askForName() {
-    askQuestion("Jay: Thank you! Please provide your Full Name.", []);
+    askQuestion("Jay: Thank you! Please provide your Full Name.");
     enableUserInput(askForEmail);
 }
 
 function askForEmail() {
-    askQuestion("Jay: Now, please provide your Email Address.", []);
+    askQuestion("Jay: Now, please provide your Email Address.");
     enableUserInput(spinForReward);
 }
 
 function spinForReward() {
-    askQuestion("Jay: Now it's time to spin for your reward! Click the button below.", []);
+    askQuestion("Jay: Now it's time to spin for your reward! Click the button below.");
     addSpinButton();
 }
 
