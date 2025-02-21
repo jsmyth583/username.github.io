@@ -206,8 +206,11 @@ function askForEmail(name) {
 
 function finalThankYou(email) {
     sessionStorage.setItem("userEmail", email);
-    
-    addMessage("Jay: Congratulations! Tap the button below to spin and see what you've won! 🎉", "bot");
+    addMessage("Jay: Thank you for submitting your details!", "bot");
+
+    // Start the spinning animation for the reward
+    showSpinningAnimation();
+}
 
     // Create spin button
     let chatBox = document.getElementById("chat-box");
@@ -226,30 +229,34 @@ function finalThankYou(email) {
 
 function showSpinningAnimation() {
     let chatBox = document.getElementById("chat-box");
+
+    // Create a spinning message
     let spinner = document.createElement("div");
     spinner.classList.add("spinner");
-    spinner.textContent = "🎡 Spinning...";
+    spinner.textContent = "🎰 Spinning...";
 
     chatBox.appendChild(spinner);
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    // Simulate spinning delay
+    // Simulate spinning delay before displaying reward
     setTimeout(() => {
-        spinner.remove();
-        giveReward();
+        spinner.remove(); // Remove the spinning animation
+        giveReward(); // Display the reward
     }, 3000);
 }
 
 function giveReward() {
-    let rewards = ["Free Naan", "10% Discount", "Free Drink", "Surprise Gift"];
+    let rewards = ["Free Naan", "10% Discount", "Free Drink", "Mystery Prize"];
     let chosenReward = rewards[Math.floor(Math.random() * rewards.length)];
 
+    // Display the reward to the user
     addMessage(`Jay: 🎉 You won **${chosenReward}**!`, "bot");
-    addMessage("Jay: Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
+    addMessage("Jay: Your review will be validated, and your voucher will be emailed to you within 12 hours.", "bot");
     addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
 
     saveChatState();
 }
+
 
 /* Spinner Container */
 .spinner-container {
