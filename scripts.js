@@ -137,8 +137,14 @@ function goBack() {
             }
         });
 
-        // Now re-ask the last question and require a new submission
-        askQuestion(lastStep.text, lastStep.options, lastStep.callback);
+        // Now re-ask the last question properly and continue flow
+        if (lastStep.callback) {
+            if (lastStep.options.length > 0) {
+                askQuestion(lastStep.text, lastStep.options, lastStep.callback);
+            } else {
+                enableUserInput(lastStep.callback);
+            }
+        }
     }
     saveChatState();
 }
