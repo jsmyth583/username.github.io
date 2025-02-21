@@ -206,7 +206,14 @@ function askForEmail(name) {
 
 function finalThankYou(email) {
     sessionStorage.setItem("userEmail", email);
-    addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
+
+    let rewards = ["Free Naan", "10% Discount", "Free Drink", "Surprise Gift"];
+    let chosenReward = rewards[Math.floor(Math.random() * rewards.length)];
+
+    addMessage(`Jay: Congratulations! You've won a **${chosenReward}** 🎉`, "bot");
+    addMessage("Jay: Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
     addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
+
     saveChatState();
 }
+
