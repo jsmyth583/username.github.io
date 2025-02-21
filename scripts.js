@@ -206,7 +206,51 @@ function askForEmail(name) {
 
 function finalThankYou(email) {
     sessionStorage.setItem("userEmail", email);
-    addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
+    addMessage("Jay: Thank you for submitting your details!", "bot");
+
+    // Add a button to trigger the spinner
+    let chatBox = document.getElementById("chat-box");
+    let spinButton = document.createElement("button");
+    spinButton.textContent = "🎰 Spin the Wheel!";
+    spinButton.classList.add("chat-button");
+    spinButton.onclick = function () {
+        spinButton.remove(); // Remove the button after clicking
+        showSpinningAnimation();
+    };
+
+    chatBox.appendChild(spinButton);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    saveChatState();
+}
+
+// Function to create spinning animation
+function showSpinningAnimation() {
+    let chatBox = document.getElementById("chat-box");
+
+    // Create a spinning message
+    let spinner = document.createElement("div");
+    spinner.classList.add("spinner");
+    spinner.textContent = "🎰 Spinning...";
+
+    chatBox.appendChild(spinner);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Simulate spinning delay before displaying reward
+    setTimeout(() => {
+        spinner.remove(); // Remove the spinning animation
+        giveReward(); // Display the reward
+    }, 3000);
+}
+
+// Function to randomly select a reward
+function giveReward() {
+    let rewards = ["Free Naan", "10% Discount", "Free Drink", "Mystery Prize"];
+    let chosenReward = rewards[Math.floor(Math.random() * rewards.length)];
+
+    // Display the reward to the user
+    addMessage(`Jay: 🎉 You won **${chosenReward}**!`, "bot");
+    addMessage("Jay: Your review will be validated, and your voucher will be emailed to you within 12 hours.", "bot");
     addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
+
     saveChatState();
 }
