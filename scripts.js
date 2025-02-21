@@ -32,11 +32,11 @@ function restoreChat() {
 function startChat() {
     if (chatStarted) return;
     chatStarted = true;
-    
+
     document.getElementById("start-button").style.display = "none";
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
-    
+
     askQuestion("Jay: Where would you like to leave your review?", [
         { text: "Google", value: "google" },
         { text: "Facebook", value: "facebook" }
@@ -45,24 +45,26 @@ function startChat() {
 
 function askQuestion(text, options = [], callback = null) {
     addMessage(text, "bot");
+    chatHistory.push({ text, options, callback });
+    saveChatState();
+
     if (options.length > 0) {
         addButton(options, callback);
     } else {
         enableUserInput(callback);
     }
-    chatHistory.push({ text, options, callback });
-    saveChatState();
+
     showGoBackButton();
 }
 
 function enableUserInput(nextStep) {
     let userInput = document.getElementById("user-input");
     let sendButton = document.getElementById("send-button");
-    
+
     userInput.style.display = "block";
     sendButton.style.display = "block";
     userInput.focus();
-    
+
     sendButton.onclick = function () {
         let inputText = userInput.value.trim();
         if (inputText) {
@@ -89,7 +91,7 @@ function addButton(options, callback) {
     let chatBox = document.getElementById("chat-box");
     let buttonContainer = document.createElement("div");
     buttonContainer.classList.add("button-container");
-    
+
     options.forEach(option => {
         let button = document.createElement("button");
         button.textContent = option.text;
@@ -101,67 +103,54 @@ function addButton(options, callback) {
         };
         buttonContainer.appendChild(button);
     });
-    
+
     chatBox.appendChild(buttonContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
-    saveChatState();
-}
-
-function showGoBackButton() {
-    let chatBox = document.getElementById("chat-box");
-    let existingBackButton = document.getElementById("go-back-button");
-    if (existingBackButton) existingBackButton.remove();
-    
-    if (chatHistory.length > 1) {
-        let backButton = document.createElement("button");
-        backButton.textContent = "← Go Back";
-        backButton.id = "go-back-button";
-        backButton.classList.add("chat-button");
-        backButton.onclick = function () {
-            goBack();
-        };
-        chatBox.appendChild(backButton);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-}
-
-function goBack() {
-    if (chatHistory.length > 1) {
-        chatHistory.pop();
-        let lastStep = chatHistory[chatHistory.length - 1];
-        document.getElementById("chat-box").innerHTML = "";
-        chatHistory.forEach(entry => {
-            addMessage(entry.text, "bot");
-            if (entry.options.length > 0) {
-                addButton(entry.options, entry.callback);
-            }
-        });
-    }
     saveChatState();
 }
 
 function handleReviewPlatform(platform) {
     sessionStorage.setItem("reviewPlatform", platform);
     saveChatState();
-    
+
     if (platform === "google") {
         window.open("https://www.google.com/search?q=green+chilli+bangor+reviews", "_blank");
     } else if (platform === "facebook") {
         window.open("https://www.facebook.com/greenchillibangor/reviews/", "_blank");
     }
-    
+
     setTimeout(() => askForScreenshot(), 3000);
 }
 
 function askForScreenshot() {
-    askQuestion("Jay: Once you've left your review, click to spin for a reward!", [], spinWheel);
+    askQuestion("Jay: Once you've left your review, upload a screenshot here.");
+    addFileUploadOption();
 }
 
-function spinWheel() {
-    let rewards = ["Free Naan", "10% Off Next Order", "Free Drink", "Bonus Points"];
-    let randomReward = rewards[Math.floor(Math.random() * rewards.length)];
-    addMessage(`Jay: Congratulations! You won ${randomReward}!`, "bot");
-    setTimeout(() => askForName(), 2000);
+function addFileUploadOption() {
+    let chatBox = document.getElementById("chat-box");
+    let uploadContainer = document.createElement("div");
+    uploadContainer.classList.add("upload-container");
+
+    let fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.classList.add("file-input");
+
+    fileInput.addEventListener("change", function () {
+        if (fileInput.files.length > 0) {
+            addMessage("You uploaded: " + fileInput.files[0].name, "user");
+            uploadContainer.remove();
+            setTimeout(() => {
+                askForName();
+            }, 1000);
+        }
+    });
+
+    uploadContainer.appendChild(fileInput);
+    chatBox.appendChild(uploadContainer);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    saveChatState();
 }
 
 function askForName() {
@@ -170,12 +159,24 @@ function askForName() {
 
 function askForEmail(name) {
     sessionStorage.setItem("userName", name);
-    askQuestion("Jay: Now, please provide your Email Address.", [], finalThankYou);
+    askQuestion("Jay: Now, please provide your Email Address.", [], spinReward);
 }
 
-function finalThankYou(email) {
+function spinReward(email) {
     sessionStorage.setItem("userEmail", email);
-    addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
+    addMessage("Jay: Great! Now, let's see what reward you've won!", "bot");
+
+    let rewards = ["Free Naan Bread", "10% Off Next Order", "Free Drink", "Free Starter with Main Course"];
+    let randomReward = rewards[Math.floor(Math.random() * rewards.length)];
+
+    setTimeout(() => {
+        addMessage("Jay: Congratulations! You've won " + randomReward + "!", "bot");
+        finalThankYou();
+    }, 2000);
+}
+
+function finalThankYou() {
+    addMessage("Jay: Your review will be validated, and your voucher, including your reward, will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
     addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
     saveChatState();
 }
