@@ -32,11 +32,11 @@ function restoreChat() {
 function startChat() {
     if (chatStarted) return;
     chatStarted = true;
-    
+
     document.getElementById("start-button").style.display = "none";
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
-    
+
     askQuestion("Jay: Where would you like to leave your review?", [
         { text: "Google", value: "google" },
         { text: "Facebook", value: "facebook" }
@@ -58,11 +58,11 @@ function askQuestion(text, options = [], callback = null) {
 function enableUserInput(nextStep) {
     let userInput = document.getElementById("user-input");
     let sendButton = document.getElementById("send-button");
-    
+
     userInput.style.display = "block";
     sendButton.style.display = "block";
     userInput.focus();
-    
+
     sendButton.onclick = function () {
         let inputText = userInput.value.trim();
         if (inputText) {
@@ -89,7 +89,7 @@ function addButton(options, callback) {
     let chatBox = document.getElementById("chat-box");
     let buttonContainer = document.createElement("div");
     buttonContainer.classList.add("button-container");
-    
+
     options.forEach(option => {
         let button = document.createElement("button");
         button.textContent = option.text;
@@ -101,7 +101,7 @@ function addButton(options, callback) {
         };
         buttonContainer.appendChild(button);
     });
-    
+
     chatBox.appendChild(buttonContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
     saveChatState();
@@ -111,7 +111,7 @@ function showGoBackButton() {
     let chatBox = document.getElementById("chat-box");
     let existingBackButton = document.getElementById("go-back-button");
     if (existingBackButton) existingBackButton.remove();
-    
+
     if (chatHistory.length > 1) {
         let backButton = document.createElement("button");
         backButton.textContent = "← Go Back";
@@ -128,21 +128,60 @@ function showGoBackButton() {
 function goBack() {
     if (chatHistory.length > 1) {
         chatHistory.pop();
-        let lastStep = chatHistory.pop();
-        askQuestion(lastStep.text, lastStep.options, lastStep.callback);
+        let lastStep = chatHistory[chatHistory.length - 1];
+        document.getElementById("chat-box").innerHTML = "";
+        chatHistory.forEach(entry => {
+            addMessage(entry.text, "bot");
+            if (entry.options.length > 0) {
+                addButton(entry.options, entry.callback);
+            }
+        });
     }
     saveChatState();
 }
 
+function handleReviewPlatform(platform) {
+    sessionStorage.setItem("reviewPlatform", platform);
+    saveChatState();
+
+    if (platform === "google") {
+        window.open("https://www.google.com/search?q=green+chilli+bangor+reviews", "_blank");
+    } else if (platform === "facebook") {
+        window.open("https://www.facebook.com/greenchillibangor/reviews/", "_blank");
+    }
+
+    setTimeout(() => askForScreenshot(), 3000);
+}
+
 function askForScreenshot() {
-    askQuestion("Jay: Once you've left your review, upload a screenshot here.", [], handleScreenshotUpload);
+    askQuestion("Jay: Once you've left your review, upload a screenshot here.");
     addFileUploadOption();
 }
 
-function handleScreenshotUpload() {
-    setTimeout(() => {
-        askForName();
-    }, 1000);
+function addFileUploadOption() {
+    let chatBox = document.getElementById("chat-box");
+    let uploadContainer = document.createElement("div");
+    uploadContainer.classList.add("upload-container");
+
+    let fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.classList.add("file-input");
+
+    fileInput.addEventListener("change", function () {
+        if (fileInput.files.length > 0) {
+            addMessage("You uploaded: " + fileInput.files[0].name, "user");
+            uploadContainer.remove();
+            setTimeout(() => {
+                askForName();
+            }, 1000);
+        }
+    });
+
+    uploadContainer.appendChild(fileInput);
+    chatBox.appendChild(uploadContainer);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    saveChatState();
 }
 
 function askForName() {
