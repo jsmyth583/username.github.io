@@ -128,59 +128,9 @@ function showGoBackButton() {
 function goBack() {
     if (chatHistory.length > 1) {
         chatHistory.pop();
-        let lastStep = chatHistory[chatHistory.length - 1];
-        document.getElementById("chat-box").innerHTML = "";
-        chatHistory.forEach(entry => {
-            addMessage(entry.text, "bot");
-            if (entry.options.length > 0) {
-                addButton(entry.options, entry.callback);
-            }
-        });
+        let lastStep = chatHistory.pop();
+        askQuestion(lastStep.text, lastStep.options, lastStep.callback);
     }
-    saveChatState();
-}
-
-function handleReviewPlatform(platform) {
-    sessionStorage.setItem("reviewPlatform", platform);
-    saveChatState();
-    
-    if (platform === "google") {
-        window.open("https://www.google.com/search?q=green+chilli+bangor+reviews", "_blank");
-    } else if (platform === "facebook") {
-        window.open("https://www.facebook.com/greenchillibangor/reviews/", "_blank");
-    }
-    
-    setTimeout(() => askForScreenshot(), 3000);
-}
-
-function askForScreenshot() {
-    askQuestion("Jay: Once you've left your review, upload a screenshot here.");
-    addFileUploadOption();
-}
-
-function addFileUploadOption() {
-    let chatBox = document.getElementById("chat-box");
-    let uploadContainer = document.createElement("div");
-    uploadContainer.classList.add("upload-container");
-
-    let fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.classList.add("file-input");
-
-    fileInput.addEventListener("change", function () {
-        if (fileInput.files.length > 0) {
-            addMessage("You uploaded: " + fileInput.files[0].name, "user");
-            uploadContainer.remove();
-            setTimeout(() => {
-                askForName();
-            }, 1000);
-        }
-    });
-    
-    uploadContainer.appendChild(fileInput);
-    chatBox.appendChild(uploadContainer);
-    chatBox.scrollTop = chatBox.scrollHeight;
     saveChatState();
 }
 
