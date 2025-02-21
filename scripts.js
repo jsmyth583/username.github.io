@@ -109,6 +109,48 @@ function addButton(options, callback) {
     saveChatState();
 }
 
+function showGoBackButton() {
+    let chatBox = document.getElementById("chat-box");
+    let existingBackButton = document.getElementById("go-back-button");
+    if (existingBackButton) existingBackButton.remove();
+
+    if (chatHistory.length > 1) {
+        let backButton = document.createElement("button");
+        backButton.textContent = "← Go Back";
+        backButton.id = "go-back-button";
+        backButton.classList.add("chat-button");
+        backButton.onclick = function () {
+            goBack();
+        };
+        chatBox.appendChild(backButton);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+}
+
+function goBack() {
+    if (chatHistory.length > 1) {
+        chatHistory.pop(); // Remove the current question
+        let lastStep = chatHistory.pop(); // Get the previous question
+        document.getElementById("chat-box").innerHTML = ""; // Clear chat box
+
+        // Rebuild the chat history up to the lastStep
+        chatHistory.forEach(entry => {
+            addMessage(entry.text, "bot");
+            if (entry.options.length > 0) {
+                addButton(entry.options, entry.callback);
+            }
+        });
+
+        // **Now properly re-ask the lastStep question with its options or input box**
+        if (lastStep.options.length > 0) {
+            askQuestion(lastStep.text, lastStep.options, lastStep.callback);
+        } else {
+            askQuestion(lastStep.text, [], lastStep.callback);
+        }
+    }
+    saveChatState();
+}
+
 function handleReviewPlatform(platform) {
     sessionStorage.setItem("reviewPlatform", platform);
     saveChatState();
@@ -138,45 +180,4 @@ function addFileUploadOption() {
     fileInput.classList.add("file-input");
 
     fileInput.addEventListener("change", function () {
-        if (fileInput.files.length > 0) {
-            addMessage("You uploaded: " + fileInput.files[0].name, "user");
-            uploadContainer.remove();
-            setTimeout(() => {
-                askForName();
-            }, 1000);
-        }
-    });
-
-    uploadContainer.appendChild(fileInput);
-    chatBox.appendChild(uploadContainer);
-    chatBox.scrollTop = chatBox.scrollHeight;
-    saveChatState();
-}
-
-function askForName() {
-    askQuestion("Jay: Thank you! Please provide your Full Name.", [], askForEmail);
-}
-
-function askForEmail(name) {
-    sessionStorage.setItem("userName", name);
-    askQuestion("Jay: Now, please provide your Email Address.", [], spinReward);
-}
-
-function spinReward(email) {
-    sessionStorage.setItem("userEmail", email);
-    addMessage("Jay: Great! Now, let's see what reward you've won!", "bot");
-
-    let rewards = ["Free Naan Bread", "10% Off Next Order", "Free Drink", "Free Starter with Main Course"];
-    let randomReward = rewards[Math.floor(Math.random() * rewards.length)];
-
-    setTimeout(() => {
-        addMessage("Jay: Congratulations! You've won " + randomReward + "!", "bot");
-        finalThankYou();
-    }, 2000);
-}
-
-function finalThankYou() {
-    addMessage("Jay: Your review will be validated, and your voucher, including your reward, will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
-    addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
-    saveChatState();
-}
+        if (fileInput.files.length >
