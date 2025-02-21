@@ -140,20 +140,36 @@ function goBack() {
     saveChatState();
 }
 
-function askForSpin() {
-    askQuestion("Jay: You’ve earned a chance to spin for a reward! Click 'Spin' to find out what you’ve won!", [
-        { text: "Spin", value: "spin" }
-    ], spinWheel);
+function handleReviewPlatform(platform) {
+    sessionStorage.setItem("reviewPlatform", platform);
+    saveChatState();
+    
+    if (platform === "google") {
+        window.open("https://www.google.com/search?q=green+chilli+bangor+reviews", "_blank");
+    } else if (platform === "facebook") {
+        window.open("https://www.facebook.com/greenchillibangor/reviews/", "_blank");
+    }
+    
+    setTimeout(() => askForScreenshot(), 3000);
+}
+
+function askForScreenshot() {
+    askQuestion("Jay: Once you've left your review, click to spin for a reward!", [], spinWheel);
 }
 
 function spinWheel() {
-    let rewards = ["Free Naan", "10% Off", "Free Drink", "Free Dessert"];
-    let chosenReward = rewards[Math.floor(Math.random() * rewards.length)];
-    addMessage("Jay: Congratulations! You’ve won " + chosenReward + "!", "bot");
-    setTimeout(() => askForEmail(), 2000);
+    let rewards = ["Free Naan", "10% Off Next Order", "Free Drink", "Bonus Points"];
+    let randomReward = rewards[Math.floor(Math.random() * rewards.length)];
+    addMessage(`Jay: Congratulations! You won ${randomReward}!`, "bot");
+    setTimeout(() => askForName(), 2000);
 }
 
-function askForEmail() {
+function askForName() {
+    askQuestion("Jay: Thank you! Please provide your Full Name.", [], askForEmail);
+}
+
+function askForEmail(name) {
+    sessionStorage.setItem("userName", name);
     askQuestion("Jay: Now, please provide your Email Address.", [], finalThankYou);
 }
 
