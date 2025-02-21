@@ -45,13 +45,15 @@ function startChat() {
 
 function askQuestion(text, options = [], callback = null) {
     addMessage(text, "bot");
+    chatHistory.push({ text, options, callback });
+    saveChatState();
+
     if (options.length > 0) {
         addButton(options, callback);
     } else {
         enableUserInput(callback);
     }
-    chatHistory.push({ text, options, callback });
-    saveChatState();
+
     showGoBackButton();
 }
 
@@ -130,6 +132,8 @@ function goBack() {
         chatHistory.pop(); // Remove the current question
         let lastStep = chatHistory.pop(); // Get the previous question
         document.getElementById("chat-box").innerHTML = ""; // Clear chat box
+
+        // Rebuild the chat history up to the lastStep
         chatHistory.forEach(entry => {
             addMessage(entry.text, "bot");
             if (entry.options.length > 0) {
@@ -137,13 +141,11 @@ function goBack() {
             }
         });
 
-        // Now re-ask the last question properly and continue flow
-        if (lastStep.callback) {
-            if (lastStep.options.length > 0) {
-                askQuestion(lastStep.text, lastStep.options, lastStep.callback);
-            } else {
-                enableUserInput(lastStep.callback);
-            }
+        // **Now properly re-ask the lastStep question with its options or input box**
+        if (lastStep.options.length > 0) {
+            askQuestion(lastStep.text, lastStep.options, lastStep.callback);
+        } else {
+            askQuestion(lastStep.text, [], lastStep.callback);
         }
     }
     saveChatState();
