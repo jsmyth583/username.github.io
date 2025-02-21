@@ -180,4 +180,33 @@ function addFileUploadOption() {
     fileInput.classList.add("file-input");
 
     fileInput.addEventListener("change", function () {
-        if (fileInput.files.length >
+        if (fileInput.files.length > 0) {
+            addMessage("You uploaded: " + fileInput.files[0].name, "user");
+            uploadContainer.remove();
+            setTimeout(() => {
+                askForName();
+            }, 1000);
+        }
+    });
+
+    uploadContainer.appendChild(fileInput);
+    chatBox.appendChild(uploadContainer);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    saveChatState();
+}
+
+function askForName() {
+    askQuestion("Jay: Thank you! Please provide your Full Name.", [], askForEmail);
+}
+
+function askForEmail(name) {
+    sessionStorage.setItem("userName", name);
+    askQuestion("Jay: Now, please provide your Email Address.", [], finalThankYou);
+}
+
+function finalThankYou(email) {
+    sessionStorage.setItem("userEmail", email);
+    addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
+    addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
+    saveChatState();
+}
