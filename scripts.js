@@ -134,18 +134,44 @@ function goBack() {
     saveChatState();
 }
 
-function askForName() {
-    askQuestion("Jay: Thank you! Please provide your Full Name.", [], askForEmail);
+function handleReviewPlatform(platform) {
+    sessionStorage.setItem("reviewPlatform", platform);
+    saveChatState();
+    
+    if (platform === "google") {
+        window.open("https://www.google.com/search?q=green+chilli+bangor+reviews", "_blank");
+    } else if (platform === "facebook") {
+        window.open("https://www.facebook.com/greenchillibangor/reviews/", "_blank");
+    }
+    
+    setTimeout(() => askForScreenshot(), 1000);
 }
 
-function askForEmail(name) {
-    sessionStorage.setItem("userName", name);
-    askQuestion("Jay: Now, please provide your Email Address.", [], finalThankYou);
+function askForScreenshot() {
+    askQuestion("Jay: Once you've left your review, upload a screenshot here.");
+    addFileUploadOption();
 }
 
-function finalThankYou(email) {
-    sessionStorage.setItem("userEmail", email);
-    addMessage("Jay: Thank you! Your review will be validated, and your voucher will be emailed to you within the next 12 hours. Please check your inbox/spam folder.", "bot");
-    addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
+function addFileUploadOption() {
+    let chatBox = document.getElementById("chat-box");
+    let uploadContainer = document.createElement("div");
+    uploadContainer.classList.add("upload-container");
+
+    let fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.classList.add("file-input");
+
+    fileInput.addEventListener("change", function () {
+        if (fileInput.files.length > 0) {
+            addMessage("You uploaded: " + fileInput.files[0].name, "user");
+            uploadContainer.remove();
+            setTimeout(() => askForName(), 1000);
+        }
+    });
+    
+    uploadContainer.appendChild(fileInput);
+    chatBox.appendChild(uploadContainer);
+    chatBox.scrollTop = chatBox.scrollHeight;
     saveChatState();
 }
