@@ -52,6 +52,7 @@ function askQuestion(text, options = [], callback = null) {
     }
     chatHistory.push({ text, options, callback });
     saveChatState();
+    showGoBackButton();
 }
 
 function enableUserInput(nextStep) {
@@ -103,6 +104,39 @@ function addButton(options, callback) {
     
     chatBox.appendChild(buttonContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
+    saveChatState();
+}
+
+function showGoBackButton() {
+    let chatBox = document.getElementById("chat-box");
+    let existingBackButton = document.getElementById("go-back-button");
+    if (existingBackButton) existingBackButton.remove();
+    
+    if (chatHistory.length > 1) {
+        let backButton = document.createElement("button");
+        backButton.textContent = "← Go Back";
+        backButton.id = "go-back-button";
+        backButton.classList.add("chat-button");
+        backButton.onclick = function () {
+            goBack();
+        };
+        chatBox.appendChild(backButton);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+}
+
+function goBack() {
+    if (chatHistory.length > 1) {
+        chatHistory.pop();
+        let lastStep = chatHistory[chatHistory.length - 1];
+        document.getElementById("chat-box").innerHTML = "";
+        chatHistory.forEach(entry => {
+            addMessage(entry.text, "bot");
+            if (entry.options.length > 0) {
+                addButton(entry.options, entry.callback);
+            }
+        });
+    }
     saveChatState();
 }
 
