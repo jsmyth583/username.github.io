@@ -127,15 +127,18 @@ function showGoBackButton() {
 
 function goBack() {
     if (chatHistory.length > 1) {
-        chatHistory.pop();
-        let lastStep = chatHistory[chatHistory.length - 1];
-        document.getElementById("chat-box").innerHTML = "";
+        chatHistory.pop(); // Remove the current question
+        let lastStep = chatHistory.pop(); // Get the previous question
+        document.getElementById("chat-box").innerHTML = ""; // Clear chat box
         chatHistory.forEach(entry => {
             addMessage(entry.text, "bot");
             if (entry.options.length > 0) {
                 addButton(entry.options, entry.callback);
             }
         });
+
+        // Now re-ask the last question and require a new submission
+        askQuestion(lastStep.text, lastStep.options, lastStep.callback);
     }
     saveChatState();
 }
