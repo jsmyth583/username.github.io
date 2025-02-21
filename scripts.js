@@ -251,4 +251,57 @@ function giveReward() {
     saveChatState();
 }
 
+/* Spinner Container */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Spinner Wheel */
+.spinner-wheel {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 5px solid #4CAF50;
+    position: relative;
+    text-align: center;
+    line-height: 100px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #4CAF50;
+    transition: transform 3s ease-out;
+}
+
+/* Spin Animation */
+.spin-animation {
+    animation: spin 3s ease-out;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(1080deg); /* Spins 3 full rotations */
+    }
+}
+
+/* Reward Button */
+#spin-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#spin-button:hover {
+    background-color: #388E3C;
+}
+
 
