@@ -244,7 +244,7 @@ function showSpinningAnimation() {
 
 // Function to randomly select a reward
 function giveReward() {
-    let rewards = ["Free Naan", "10% Discount", "Free Drink", "Mystery Prize"];
+    let rewards = ["Chips 🍟", "Naan Bread 🍞", "Onion Bhaji 🧅", "Chicken Pakora 🍗"];
     let chosenReward = rewards[Math.floor(Math.random() * rewards.length)];
 
     // Display the reward to the user
