@@ -101,6 +101,22 @@ body {
     transition: background 0.2s ease-in-out;
 }
 
+/* Go Back Button - Less distracting */
+#go-back-button {
+    background: #d3d3d3; /* Light gray color */
+    color: #333; /* Dark gray text */
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+#go-back-button:hover {
+    background: #b0b0b0; /* Slightly darker gray on hover */
+}
+
 .chat-button:hover {
     background: #218838;
 }
