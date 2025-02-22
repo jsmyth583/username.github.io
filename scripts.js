@@ -119,13 +119,19 @@ function showGoBackButton() {
         backButton.textContent = "← Go Back";
         backButton.id = "go-back-button";
         backButton.classList.add("chat-button");
+
         backButton.onclick = function () {
             goBack();
         };
-        chatBox.appendChild(backButton);
-        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Wait 500ms so messages appear first, THEN show the button
+        setTimeout(() => {
+            chatBox.appendChild(backButton);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, 500); // Delay helps reduce distraction
     }
 }
+
 
 function goBack() {
     if (chatHistory.length > 1) {
