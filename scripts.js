@@ -37,7 +37,7 @@ function startChat() {
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
 
-    askQuestion("Jay: Where would you like to leave your review?", [
+    askQuestion("Jay: Where would you like to leave your review? (Please take a screenshot after submitting!)", [
         { text: "Google", value: "google" },
         { text: "Facebook", value: "facebook" }
     ], handleReviewPlatform);
