@@ -50,11 +50,10 @@ function handleInitialChoice(choice) {
         askSocialMediaInstructions();
     }
 
-    // Add a "Go Back" button to return to the initial question
     showGoBackToInitialChoice();
 }
 
-// Function to show "Go Back" button
+// Show "Go Back" button for the initial choice
 function showGoBackToInitialChoice() {
     let chatBox = document.getElementById("chat-box");
     let existingBackButton = document.getElementById("go-back-button-initial");
@@ -73,17 +72,15 @@ function showGoBackToInitialChoice() {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Function to handle going back to initial choice
+// Function to return to the first question
 function goBackToInitialChoice() {
     document.getElementById("chat-box").innerHTML = ""; // Clear chat
 
-    // Re-ask the first question
     askQuestion("Jay: To get a Spin to Win, do you want to leave a review or post on social media?", [
         { text: "Leave a Review", value: "review" },
         { text: "Post on Social Media", value: "social" }
     ], handleInitialChoice);
 }
-
 
 function enableUserInput(nextStep) {
     let userInput = document.getElementById("user-input");
@@ -137,52 +134,11 @@ function addButton(options, callback) {
     saveChatState();
 }
 
-function showGoBackButton() {
-    let chatBox = document.getElementById("chat-box");
-    let existingBackButton = document.getElementById("go-back-button");
-    if (existingBackButton) existingBackButton.remove();
-
-    if (chatHistory.length > 1) {
-        let backButton = document.createElement("button");
-        backButton.textContent = "← Go Back";
-        backButton.id = "go-back-button";
-        backButton.classList.add("chat-button");
-
-        backButton.onclick = function () {
-            goBack();
-        };
-
-        // Wait 500ms so messages appear first, THEN show the button
-        setTimeout(() => {
-            chatBox.appendChild(backButton);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }, 500); // Delay helps reduce distraction
-    }
-}
-
-
-function goBack() {
-    if (chatHistory.length > 1) {
-        chatHistory.pop(); // Remove the current question
-        let lastStep = chatHistory.pop(); // Get the previous question
-        document.getElementById("chat-box").innerHTML = ""; // Clear chat box
-
-        // Rebuild the chat history up to the lastStep
-        chatHistory.forEach(entry => {
-            addMessage(entry.text, "bot");
-            if (entry.options.length > 0) {
-                addButton(entry.options, entry.callback);
-            }
-        });
-
-        // **Now properly re-ask the lastStep question with its options or input box**
-        if (lastStep.options.length > 0) {
-            askQuestion(lastStep.text, lastStep.options, lastStep.callback);
-        } else {
-            askQuestion(lastStep.text, [], lastStep.callback);
-        }
-    }
-    saveChatState();
+function askReviewPlatform() {
+    askQuestion("Jay: Where would you like to leave your review?", [
+        { text: "Google", value: "google" },
+        { text: "Facebook", value: "facebook" }
+    ], handleReviewPlatform);
 }
 
 function handleReviewPlatform(platform) {
@@ -191,38 +147,30 @@ function handleReviewPlatform(platform) {
 
     if (platform === "google") {
         window.open("https://www.google.com/search?q=green+chilli+bangor+reviews", "_blank");
-        setTimeout(() => askForScreenshot(), 3000);
     } else if (platform === "facebook") {
         window.open("https://www.facebook.com/greenchillibangor/reviews/", "_blank");
-        setTimeout(() => askForScreenshot(), 3000);
-    } else if (platform === "social") {
-        askSocialMediaInstructions();
     }
+
+    setTimeout(() => askForScreenshot(), 3000);
 }
 
 function askSocialMediaInstructions() {
     addMessage("Jay: To leave a Social Media review, follow these steps:", "bot");
-    
-    addMessage("1️⃣ Like/Follow our pages: \n📌 [Facebook](https://www.facebook.com/greenchillibangor?locale=en_GB) \n📌 [Instagram](https://www.instagram.com/green_chilli_restaurant/)", "bot");
-    
-    addMessage("2️⃣ Post this image on your Instagram Story, Instagram Feed, or Facebook Story:", "bot");
+    addMessage("📌 Like/Follow our pages: \n🔗 [Facebook](https://www.facebook.com/greenchillibangor?locale=en_GB) \n🔗 [Instagram](https://www.instagram.com/green_chilli_restaurant/)", "bot");
+    addMessage("📸 Post this image on Instagram or Facebook (Story or Feed):", "bot");
 
-    // Display the image they need to post
     let chatBox = document.getElementById("chat-box");
     let image = document.createElement("img");
-    image.src = "https://scontent-man2-1.xx.fbcdn.net/v/t39.30808-6/481024849_1437852797540419_1520032287454362269_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_ohc=PNb1F3GFhuwQ7kNvgEQGQKA&_nc_oc=AdgZhbD-BBSpftS6KtOi0ofOhNckQXmpKUhT-BsRZ_trv7BCv4453IOTHeNWMjclqCo&_nc_zt=23&_nc_ht=scontent-man2-1.xx&_nc_gid=ADN3WEz-QymNklxdlKiWZ4K&oh=00_AYBikKR8bfUsgVxTdV1kVIczuWjprSGOzuV2u2xey1SyDg&oe=67C03B82";
+    image.src = "https://scontent-man2-1.xx.fbcdn.net/v/t39.30808-6/481024849_1437852797540419_1520032287454362269_n.jpg";
     image.style.width = "100%";
     image.style.borderRadius = "10px";
     chatBox.appendChild(image);
 
-    addMessage("3️⃣ Tag our business in your post: \n📍 @greenchillibangor on Facebook \n📍 @green_chilli_restaurant on Instagram", "bot");
-
-    addMessage("Once you've done that, upload a screenshot of your post here:", "bot");
+    addMessage("📍 Tag our business: \n🔗 @greenchillibangor (Facebook) \n🔗 @green_chilli_restaurant (Instagram)", "bot");
+    addMessage("📤 Once done, upload a screenshot of your post here:", "bot");
     
-    // Add file upload option
     addFileUploadOption();
 }
-
 
 function addFileUploadOption() {
     let chatBox = document.getElementById("chat-box");
@@ -238,9 +186,7 @@ function addFileUploadOption() {
         if (fileInput.files.length > 0) {
             addMessage("You uploaded: " + fileInput.files[0].name, "user");
             uploadContainer.remove();
-            setTimeout(() => {
-                askForName();
-            }, 1000);
+            setTimeout(() => askForName(), 1000);
         }
     });
 
@@ -263,13 +209,12 @@ function finalThankYou(email) {
     sessionStorage.setItem("userEmail", email);
     addMessage("Jay: Thank you for submitting your details!", "bot");
 
-    // Add a button to trigger the spinner
     let chatBox = document.getElementById("chat-box");
     let spinButton = document.createElement("button");
     spinButton.textContent = "🎰 Spin the Wheel!";
     spinButton.classList.add("chat-button");
     spinButton.onclick = function () {
-        spinButton.remove(); // Remove the button after clicking
+        spinButton.remove();
         showSpinningAnimation();
     };
 
@@ -278,34 +223,23 @@ function finalThankYou(email) {
     saveChatState();
 }
 
-// Function to create spinning animation
+// Function for spinning animation and reward selection
 function showSpinningAnimation() {
     let chatBox = document.getElementById("chat-box");
-
-    // Create a spinning message
     let spinner = document.createElement("div");
     spinner.classList.add("spinner");
     spinner.textContent = "🎰 Spinning...";
-
     chatBox.appendChild(spinner);
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    // Simulate spinning delay before displaying reward
     setTimeout(() => {
-        spinner.remove(); // Remove the spinning animation
-        giveReward(); // Display the reward
+        spinner.remove();
+        giveReward();
     }, 3000);
 }
 
-// Function to randomly select a reward
 function giveReward() {
     let rewards = ["Chips 🍟", "Naan Bread 🍞", "Onion Bhaji 🧅", "Chicken Pakora 🍗"];
     let chosenReward = rewards[Math.floor(Math.random() * rewards.length)];
-
-    // Display the reward to the user
-    addMessage(Jay: 🎉 You won **${chosenReward}**!, "bot");
-    addMessage("Jay: Your review will be validated, and your voucher will be emailed to you within 12 hours.", "bot");
-    addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
-
-    saveChatState();
+    addMessage(`Jay: 🎉 You won **${chosenReward}**!`, "bot");
 }
