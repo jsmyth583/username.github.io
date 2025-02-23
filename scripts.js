@@ -49,21 +49,41 @@ function handleInitialChoice(choice) {
     } else if (choice === "social") {
         askSocialMediaInstructions();
     }
+
+    // Add a "Go Back" button to return to the initial question
+    showGoBackToInitialChoice();
 }
 
-function askQuestion(text, options = [], callback = null) {
-    addMessage(text, "bot");
-    chatHistory.push({ text, options, callback });
-    saveChatState();
+// Function to show "Go Back" button
+function showGoBackToInitialChoice() {
+    let chatBox = document.getElementById("chat-box");
+    let existingBackButton = document.getElementById("go-back-button-initial");
+    if (existingBackButton) existingBackButton.remove();
 
-    if (options.length > 0) {
-        addButton(options, callback);
-    } else {
-        enableUserInput(callback);
-    }
+    let backButton = document.createElement("button");
+    backButton.textContent = "← Go Back";
+    backButton.id = "go-back-button-initial";
+    backButton.classList.add("chat-button");
 
-    showGoBackButton();
+    backButton.onclick = function () {
+        goBackToInitialChoice();
+    };
+
+    chatBox.appendChild(backButton);
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
+
+// Function to handle going back to initial choice
+function goBackToInitialChoice() {
+    document.getElementById("chat-box").innerHTML = ""; // Clear chat
+
+    // Re-ask the first question
+    askQuestion("Jay: To get a Spin to Win, do you want to leave a review or post on social media?", [
+        { text: "Leave a Review", value: "review" },
+        { text: "Post on Social Media", value: "social" }
+    ], handleInitialChoice);
+}
+
 
 function enableUserInput(nextStep) {
     let userInput = document.getElementById("user-input");
