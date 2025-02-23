@@ -37,13 +37,19 @@ function startChat() {
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
 
-    askQuestion("Jay: Where would you like to leave your review? (Take a screenshot before submitting)", [
-        { text: "Google", value: "google" },
-        { text: "Facebook", value: "facebook" },
-        { text: "Social Media (Instagram/Facebook)", value: "social" }
-    ], handleReviewPlatform);
+    askQuestion("Jay: To get a Spin to Win, do you want to leave a review or post on social media?", [
+        { text: "Leave a Review", value: "review" },
+        { text: "Post on Social Media", value: "social" }
+    ], handleInitialChoice);
 }
 
+function handleInitialChoice(choice) {
+    if (choice === "review") {
+        askReviewPlatform();
+    } else if (choice === "social") {
+        askSocialMediaInstructions();
+    }
+}
 
 function askQuestion(text, options = [], callback = null) {
     addMessage(text, "bot");
