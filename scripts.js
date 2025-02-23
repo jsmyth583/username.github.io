@@ -37,11 +37,13 @@ function startChat() {
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
 
-    askQuestion("Jay: Where would you like to leave your review? (Please take a screenshot after submitting!)", [
+    askQuestion("Jay: Where would you like to leave your review? (Take a screenshot before submitting)", [
         { text: "Google", value: "google" },
-        { text: "Facebook", value: "facebook" }
+        { text: "Facebook", value: "facebook" },
+        { text: "Social Media (Instagram/Facebook)", value: "social" }
     ], handleReviewPlatform);
 }
+
 
 function askQuestion(text, options = [], callback = null) {
     addMessage(text, "bot");
@@ -163,17 +165,38 @@ function handleReviewPlatform(platform) {
 
     if (platform === "google") {
         window.open("https://www.google.com/search?q=green+chilli+bangor+reviews", "_blank");
+        setTimeout(() => askForScreenshot(), 3000);
     } else if (platform === "facebook") {
         window.open("https://www.facebook.com/greenchillibangor/reviews/", "_blank");
+        setTimeout(() => askForScreenshot(), 3000);
+    } else if (platform === "social") {
+        askSocialMediaInstructions();
     }
-
-    setTimeout(() => askForScreenshot(), 3000);
 }
 
-function askForScreenshot() {
-    askQuestion("Jay: Once you've left your review, upload a screenshot here.");
+function askSocialMediaInstructions() {
+    addMessage("Jay: To leave a Social Media review, follow these steps:", "bot");
+    
+    addMessage("1️⃣ Like/Follow our pages: \n📌 [Facebook](https://www.facebook.com/greenchillibangor?locale=en_GB) \n📌 [Instagram](https://www.instagram.com/green_chilli_restaurant/)", "bot");
+    
+    addMessage("2️⃣ Post this image on your Instagram Story, Instagram Feed, or Facebook Story:", "bot");
+
+    // Display the image they need to post
+    let chatBox = document.getElementById("chat-box");
+    let image = document.createElement("img");
+    image.src = "https://scontent-man2-1.xx.fbcdn.net/v/t39.30808-6/481024849_1437852797540419_1520032287454362269_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_ohc=PNb1F3GFhuwQ7kNvgEQGQKA&_nc_oc=AdgZhbD-BBSpftS6KtOi0ofOhNckQXmpKUhT-BsRZ_trv7BCv4453IOTHeNWMjclqCo&_nc_zt=23&_nc_ht=scontent-man2-1.xx&_nc_gid=ADN3WEz-QymNklxdlKiWZ4K&oh=00_AYBikKR8bfUsgVxTdV1kVIczuWjprSGOzuV2u2xey1SyDg&oe=67C03B82";
+    image.style.width = "100%";
+    image.style.borderRadius = "10px";
+    chatBox.appendChild(image);
+
+    addMessage("3️⃣ Tag our business in your post: \n📍 @greenchillibangor on Facebook \n📍 @green_chilli_restaurant on Instagram", "bot");
+
+    addMessage("Once you've done that, upload a screenshot of your post here:", "bot");
+    
+    // Add file upload option
     addFileUploadOption();
 }
+
 
 function addFileUploadOption() {
     let chatBox = document.getElementById("chat-box");
