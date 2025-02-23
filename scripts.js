@@ -1,8 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("DOM fully loaded and script running...");
+
     let startButton = document.getElementById("start-button");
-    if (startButton) {
-        startButton.addEventListener("click", startChat);
+    
+    if (!startButton) {
+        console.error("❌ Start button not found!");
+        return;
     }
+
+    startButton.addEventListener("click", function () {
+        console.log("✅ Start button clicked");
+        startChat();
+    });
 
     if (sessionStorage.getItem("chatState")) {
         restoreChat();
@@ -12,28 +21,18 @@ document.addEventListener("DOMContentLoaded", function () {
 let chatStarted = false;
 let chatHistory = [];
 
-function saveChatState() {
-    sessionStorage.setItem("chatState", JSON.stringify(chatHistory));
-}
-
-function restoreChat() {
-    let savedChat = sessionStorage.getItem("chatState");
-    if (savedChat) {
-        chatHistory = JSON.parse(savedChat);
-        chatHistory.forEach(entry => {
-            addMessage(entry.text, "bot");
-            if (entry.options.length > 0) {
-                addButton(entry.options, entry.callback);
-            }
-        });
-    }
-}
-
 function startChat() {
-    if (chatStarted) return;
+    if (chatStarted) {
+        console.warn("⚠ Chat already started!");
+        return;
+    }
+    
     chatStarted = true;
+    console.log("🚀 Chat Started!");
 
-    document.getElementById("start-button").style.display = "none";
+    let startButton = document.getElementById("start-button");
+    if (startButton) startButton.style.display = "none";
+
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
 
@@ -42,6 +41,7 @@ function startChat() {
         { text: "Post on Social Media", value: "social" }
     ], handleInitialChoice);
 }
+
 
 function handleInitialChoice(choice) {
     if (choice === "review") {
