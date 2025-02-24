@@ -211,17 +211,6 @@ function addFileUploadOption() {
     saveChatState();
 }
 
-    uploadContainer.appendChild(fileInput);
-    chatBox.appendChild(uploadContainer);
-    chatBox.scrollTop = chatBox.scrollHeight;
-
-    // 🔥 Hide input box when file upload is required
-    document.getElementById("user-input").style.display = "none";
-    document.getElementById("send-button").style.display = "none";
-
-    saveChatState();
-}
-
 
 function askForName() {
     askQuestion("Jay: Thank you! Please provide your Full Name.", [], enableUserInput);
