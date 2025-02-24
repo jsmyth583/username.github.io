@@ -61,8 +61,9 @@ function enableUserInput(nextStep) {
     let userInput = document.getElementById("user-input");
     let sendButton = document.getElementById("send-button");
 
-    userInput.style.display = "block"; // Show input box
-    sendButton.style.display = "block"; // Show send button
+    // Show input ONLY when expected
+    userInput.style.display = "block";
+    sendButton.style.display = "block";
     userInput.focus();
 
     sendButton.onclick = function () {
@@ -70,8 +71,11 @@ function enableUserInput(nextStep) {
         if (inputText) {
             addMessage("You: " + inputText, "user");
             userInput.value = "";
-            userInput.style.display = "none"; // Hide input box after input
-            sendButton.style.display = "none"; // Hide send button after input
+
+            // Hide input box after use
+            userInput.style.display = "none";
+            sendButton.style.display = "none";
+
             if (nextStep) nextStep(inputText);
         }
     };
@@ -199,8 +203,25 @@ function addFileUploadOption() {
     uploadContainer.appendChild(fileInput);
     chatBox.appendChild(uploadContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
+
+    // 🔥 Hide input box when file upload is required
+    document.getElementById("user-input").style.display = "none";
+    document.getElementById("send-button").style.display = "none";
+
     saveChatState();
 }
+
+    uploadContainer.appendChild(fileInput);
+    chatBox.appendChild(uploadContainer);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // 🔥 Hide input box when file upload is required
+    document.getElementById("user-input").style.display = "none";
+    document.getElementById("send-button").style.display = "none";
+
+    saveChatState();
+}
+
 
 function askForName() {
     askQuestion("Jay: Thank you! Please provide your Full Name.", [], enableUserInput);
