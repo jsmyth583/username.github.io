@@ -61,8 +61,8 @@ function enableUserInput(nextStep) {
     let userInput = document.getElementById("user-input");
     let sendButton = document.getElementById("send-button");
 
-    userInput.style.display = "block";
-    sendButton.style.display = "block";
+    userInput.style.display = "block"; // Show input box
+    sendButton.style.display = "block"; // Show send button
     userInput.focus();
 
     sendButton.onclick = function () {
@@ -70,12 +70,13 @@ function enableUserInput(nextStep) {
         if (inputText) {
             addMessage("You: " + inputText, "user");
             userInput.value = "";
-            userInput.style.display = "none";
-            sendButton.style.display = "none";
+            userInput.style.display = "none"; // Hide input box after input
+            sendButton.style.display = "none"; // Hide send button after input
             if (nextStep) nextStep(inputText);
         }
     };
 }
+
 
 function addMessage(text, sender) {
     let chatBox = document.getElementById("chat-box");
@@ -202,12 +203,12 @@ function addFileUploadOption() {
 }
 
 function askForName() {
-    askQuestion("Jay: Thank you! Please provide your Full Name.", [], askForEmail);
+    askQuestion("Jay: Thank you! Please provide your Full Name.", [], enableUserInput);
 }
 
 function askForEmail(name) {
     sessionStorage.setItem("userName", name);
-    askQuestion("Jay: Now, please provide your Email Address.", [], finalThankYou);
+    askQuestion("Jay: Now, please provide your Email Address.", [], enableUserInput);
 }
 
 function finalThankYou(email) {
