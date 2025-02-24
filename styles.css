@@ -20,6 +20,20 @@ body {
     flex-direction: column;
     animation: fadeIn 0.5s ease-in-out;
 }
+#opening-title {
+    font-size: 24px; /* Makes the text bigger */
+    font-weight: bold; /* Makes the text bold */
+    text-align: center; /* Centers the text */
+    line-height: 1.5; /* Increases spacing between lines */
+    margin-bottom: 15px; /* Adds space between the title and the button */
+    color: #28A745; /* Sets the color to green */
+}
+
+#opening-title span {
+    display: block; /* Forces "Leave a Review & Spin To Win" onto a new line */
+    font-size: 22px; /* Slightly smaller than the first line */
+    color: #000; /* Sets this line to black */
+}
 
 @keyframes fadeIn {
     from { opacity: 0; transform: scale(0.9); }
@@ -152,6 +166,11 @@ body {
 #send-button:hover {
     background: #218838;
 }
+
+<div id="opening-title">
+    Thanks for Ordering! <br>
+    <span>Leave a Review & Spin To Win A Tasty Reward!</span>
+</div>
 
 #start-button {
     padding: 15px 20px;
