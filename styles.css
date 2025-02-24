@@ -129,24 +129,27 @@ body {
     font-size: 14px;
 }
 
-}/* ✨ Make Input Field Bigger */
+/* Make input field bigger */
 #user-input {
-    font-size: 18px; /* Bigger text */
-    padding: 12px; /* More spacing inside */
+    font-size: 18px;
+    padding: 12px;
+    width: 90%;
+    max-width: 350px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    display: none; /* Hidden by default */
 }
 
-
+/* Button styling */
 #send-button {
-    padding: 10px;
-    border: none;
-    border-radius: 15px;
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 10px;
     background: #28A745;
     color: white;
+    border: none;
     cursor: pointer;
-    font-size: 14px;
-    margin: 10px auto;
-    display: block;
-    transition: background 0.2s ease-in-out;
+    display: none; /* Hidden by default */
 }
 
 #send-button:hover {
