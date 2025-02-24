@@ -172,6 +172,22 @@ body {
     transform: scale(1.05);
 }
 
+/* Landing Page Title Styling */
+#landing-title {
+    font-size: 24px; /* Increase font size */
+    font-weight: bold; /* Make it bold */
+    text-align: center; /* Center the text */
+    color: white; /* Keep text white */
+    line-height: 1.4; /* Adjust spacing between lines */
+    padding: 20px; /* Add more space inside */
+}
+
+/* Add space between lines */
+#landing-title span {
+    display: block; /* Makes each line separate */
+    margin-bottom: 10px; /* Adds space between lines */
+}
+
 
 @keyframes bounceIn {
     0% { transform: scale(0.9); opacity: 0; }
