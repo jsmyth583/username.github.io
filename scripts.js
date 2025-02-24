@@ -198,8 +198,14 @@ function addFileUploadOption() {
     uploadContainer.appendChild(fileInput);
     chatBox.appendChild(uploadContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
+
+    // 🔥 Hide input field & send button during file upload
+    document.getElementById("user-input").style.display = "none";
+    document.getElementById("send-button").style.display = "none";
+
     saveChatState();
 }
+
 
 function askForName() {
     askQuestion("Jay: Thank you! Please provide your Full Name.", [], askForEmail);
