@@ -278,7 +278,7 @@ function giveReward() {
 }
 
 function sendDataToGoogleSheets(name, email, reward) {
-    let url = "https://script.google.com/macros/s/AKfycbykcplDVSzqBIa6vG_cM07pFxhJHuONIfDOOksO_SOuM2qpcEzsK2orrBXjzXbNcNXe/exec"; // Your Web App URL
+    let url = "https://script.google.com/macros/s/AKfycbxilXgaGzITkwmmOoAFuw2xJO9BjkD3zozpwQ1ZmNh1wab8IYiHO6V47qD3R1_HUxEp/exec"; // Your Web App URL
 
     let data = {
         name: name,
