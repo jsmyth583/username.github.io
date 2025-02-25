@@ -37,7 +37,7 @@ function startChat() {
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
 
-    askQuestion(": Where would you like to leave your review? (Please take a screenshot after submitting!)", [
+    askQuestion("Where would you like to leave your review? (Please take a screenshot after submitting!)", [
         { text: "Google", value: "google" },
         { text: "Facebook", value: "facebook" }
     ], handleReviewPlatform);
@@ -208,17 +208,17 @@ function addFileUploadOption() {
 
 
 function askForName() {
-    askQuestion(": Thank you! Please provide your Full Name.", [], askForEmail);
+    askQuestion("Thank you! Please provide your Full Name.", [], askForEmail);
 }
 
 function askForEmail(name) {
     sessionStorage.setItem("userName", name);
-    askQuestion(": Now, please provide your Email Address.", [], finalThankYou);
+    askQuestion("Now, please provide your Email Address.", [], finalThankYou);
 }
 
 function finalThankYou(email) {
     sessionStorage.setItem("userEmail", email);
-    addMessage(": Thank you for submitting your details!", "bot");
+    addMessage("Thank you for submitting your details!", "bot");
 
     // Add a button to trigger the spinner
     let chatBox = document.getElementById("chat-box");
@@ -260,9 +260,9 @@ function giveReward() {
     let chosenReward = rewards[Math.floor(Math.random() * rewards.length)];
 
     // Display the reward to the user
-    addMessage(`: 🎉 You have won **${chosenReward}**!`, "bot");
-    addMessage(": Your review will be validated, and your voucher will be emailed to you within 12 hours.", "bot");
-    addMessage(": We appreciate your support and hope to serve you again soon!", "bot");
+    addMessage(`🎉 You have won **${chosenReward}**!`, "bot");
+    addMessage("Your review will be validated, and your voucher will be emailed to you within 12 hours.", "bot");
+    addMessage("We appreciate your support and hope to serve you again soon!", "bot");
 
     saveChatState();
 }
