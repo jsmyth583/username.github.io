@@ -37,7 +37,7 @@ function startChat() {
     document.getElementById("chat-header").style.display = "block";
     document.getElementById("chat-box").style.display = "block";
 
-    askQuestion("Jay: Where would you like to leave your review? (Please take a screenshot after submitting!)", [
+    askQuestion(": Where would you like to leave your review? (Please take a screenshot after submitting!)", [
         { text: "Google", value: "google" },
         { text: "Facebook", value: "facebook" }
     ], handleReviewPlatform);
@@ -171,7 +171,7 @@ function handleReviewPlatform(platform) {
 }
 
 function askForScreenshot() {
-    askQuestion("Jay: Once you've left your review, upload a screenshot here.");
+    askQuestion(": Once you've left your review, upload a screenshot here.");
     addFileUploadOption();
 }
 
@@ -208,17 +208,17 @@ function addFileUploadOption() {
 
 
 function askForName() {
-    askQuestion("Jay: Thank you! Please provide your Full Name.", [], askForEmail);
+    askQuestion(": Thank you! Please provide your Full Name.", [], askForEmail);
 }
 
 function askForEmail(name) {
     sessionStorage.setItem("userName", name);
-    askQuestion("Jay: Now, please provide your Email Address.", [], finalThankYou);
+    askQuestion(": Now, please provide your Email Address.", [], finalThankYou);
 }
 
 function finalThankYou(email) {
     sessionStorage.setItem("userEmail", email);
-    addMessage("Jay: Thank you for submitting your details!", "bot");
+    addMessage(": Thank you for submitting your details!", "bot");
 
     // Add a button to trigger the spinner
     let chatBox = document.getElementById("chat-box");
@@ -256,13 +256,13 @@ function showSpinningAnimation() {
 
 // Function to randomly select a reward
 function giveReward() {
-    let rewards = ["Chips 🍟", "Naan Bread 🍞", "Onion Bhaji 🧅", "Chicken Pakora 🍗"];
+    let rewards = ["Chips 🍟", "Naan Bread", "Onion Bhaji", "Chicken Pakora"];
     let chosenReward = rewards[Math.floor(Math.random() * rewards.length)];
 
     // Display the reward to the user
-    addMessage(`Jay: 🎉 You won **${chosenReward}**!`, "bot");
-    addMessage("Jay: Your review will be validated, and your voucher will be emailed to you within 12 hours.", "bot");
-    addMessage("Jay: We appreciate your support and hope to serve you again soon!", "bot");
+    addMessage(`: 🎉 You have won **${chosenReward}**!`, "bot");
+    addMessage(": Your review will be validated, and your voucher will be emailed to you within 12 hours.", "bot");
+    addMessage(": We appreciate your support and hope to serve you again soon!", "bot");
 
     saveChatState();
 }
