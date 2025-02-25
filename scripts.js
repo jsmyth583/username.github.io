@@ -218,7 +218,13 @@ function askForEmail(name) {
 
 function finalThankYou(email) {
     sessionStorage.setItem("userEmail", email);
-    addMessage("Thank you for submitting your details!", "bot");
+    let name = sessionStorage.getItem("userName");
+    let reward = sessionStorage.getItem("rewardWon");  // Retrieve stored reward
+
+    addMessage("Green Chilli: Thank you for submitting your details! Your review will be validated, and your voucher will be emailed within 12 hours. Check your inbox/spam folder!", "bot");
+
+    // Send user details and reward to Google Sheets
+    sendDataToGoogleSheets(name, email, reward);
 
     // Add a button to trigger the spinner
     let chatBox = document.getElementById("chat-box");
@@ -234,6 +240,7 @@ function finalThankYou(email) {
     chatBox.scrollTop = chatBox.scrollHeight;
     saveChatState();
 }
+
 
 // Function to create spinning animation
 function showSpinningAnimation() {
@@ -265,4 +272,21 @@ function giveReward() {
     addMessage("We appreciate your support and hope to serve you again soon!", "bot");
 
     saveChatState();
+}
+
+function sendDataToGoogleSheets(name, email, reward) {
+    fetch(1K2Emi5_yafsM6eJh3C-QETRbN9bo0vbWywaHI_EDeRA, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: name,
+            email: email,
+            reward: reward
+        })
+    })
+    .then(response => response.text())
+    .then(data => console.log("Data sent: ", data))
+    .catch(error => console.error("Error:", error));
 }
