@@ -218,13 +218,16 @@ function askForEmail(name) {
 
 function finalThankYou(email) {
     sessionStorage.setItem("userEmail", email);
+    
+    // Retrieve stored values
     let name = sessionStorage.getItem("userName");
-    let reward = sessionStorage.getItem("rewardWon");  // Retrieve stored reward
+    let reward = sessionStorage.getItem("userReward");
 
-    addMessage("Green Chilli: Thank you for submitting your details! Your review will be validated, and your voucher will be emailed within 12 hours. Check your inbox/spam folder!", "bot");
-
-    // Send user details and reward to Google Sheets
+    // Send data to Google Sheets
     sendDataToGoogleSheets(name, email, reward);
+
+    // Display confirmation message
+    addMessage("Thank you for submitting your details! Your review will be validated, and your voucher will be emailed within 12 hours.", "bot");
 
     // Add a button to trigger the spinner
     let chatBox = document.getElementById("chat-box");
@@ -274,19 +277,18 @@ function giveReward() {
     saveChatState();
 }
 
+// Function to send data to Google Sheets
 function sendDataToGoogleSheets(name, email, reward) {
-    fetch(1K2Emi5_yafsM6eJh3C-QETRbN9bo0vbWywaHI_EDeRA, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            name: name,
-            email: email,
-            reward: reward
-        })
-    })
-    .then(response => response.text())
-    .then(data => console.log("Data sent: ", data))
-    .catch(error => console.error("Error:", error));
+    let scriptURL = AKfycbykcplDVSzqBIa6vG_cM07pFxhJHuONIfDOOksO_SOuM2qpcEzsK2orrBXjzXbNcNXe
+; // Replace with your actual script URL
+
+    let formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("reward", reward);
+
+    fetch(scriptURL, { method: "POST", body: formData })
+        .then(response => response.text())
+        .then(data => console.log("Success:", data))
+        .catch(error => console.error("Error:", error));
 }
