@@ -277,18 +277,23 @@ function giveReward() {
     saveChatState();
 }
 
-// Function to send data to Google Sheets
 function sendDataToGoogleSheets(name, email, reward) {
-    let scriptURL = AKfycbykcplDVSzqBIa6vG_cM07pFxhJHuONIfDOOksO_SOuM2qpcEzsK2orrBXjzXbNcNXe
-; // Replace with your actual script URL
+    let url = "https://script.google.com/macros/s/AKfycbykcplDVSzqBIa6vG_cM07pFxhJHuONIfDOOksO_SOuM2qpcEzsK2orrBXjzXbNcNXe/exec"; // Your Web App URL
 
-    let formData = new FormData();
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("reward", reward);
+    let data = {
+        name: name,
+        email: email,
+        reward: reward || "Not Yet Won"
+    };
 
-    fetch(scriptURL, { method: "POST", body: formData })
-        .then(response => response.text())
-        .then(data => console.log("Success:", data))
-        .catch(error => console.error("Error:", error));
+    fetch(url, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => console.log("Data sent successfully"))
+    .catch(error => console.error("Error sending data:", error));
 }
