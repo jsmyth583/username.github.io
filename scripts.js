@@ -171,7 +171,7 @@ function handleReviewPlatform(platform) {
 }
 
 function askForScreenshot() {
-    askQuestion(": Once you've left your review, upload a screenshot here.");
+    askQuestion("Once you've left your review, upload a screenshot here.");
     addFileUploadOption();
 }
 
