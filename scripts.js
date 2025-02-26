@@ -306,7 +306,7 @@ function sendToGoogleSheets(imageData) {
         screenshot: imageData  // Send Base64 image directly
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbzueq0RJ3D-5k0xhOYl3m6CVEzLjD0-o6LWonjJ7cF7imOz7-wx2vfai5dKha56w7P-/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbylCFUtbkrv0_rt5CwJg4xhEM4X_iVVxHAxSRZKw8HlYGN8WJgAmT-hGi7KqUO4nk40/exec", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
