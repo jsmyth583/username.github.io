@@ -185,27 +185,27 @@ function addFileUploadOption() {
     fileInput.accept = "image/*";
     fileInput.classList.add("file-input");
 
-fileInput.addEventListener("change", function () {
-    if (fileInput.files.length > 0) {
-        let file = fileInput.files[0];
-        let reader = new FileReader();
-
-        reader.onloadend = function () {
-            let base64Image = reader.result.split(",")[1]; // Extract Base64 data
+    fileInput.addEventListener("change", function () {
+        if (fileInput.files.length > 0) {
+            let file = fileInput.files[0];
+            let reader = new FileReader();
             
-            console.log("📸 Sending Screenshot to Google Sheets...");
-
-            // Send the image immediately instead of storing it in sessionStorage
-            sendToGoogleSheets(base64Image);
-        };
-
-        reader.readAsDataURL(file);
-    }
-});
-
-
- 
-
+            reader.onloadend = function () {
+                let base64Image = reader.result.split(",")[1]; // Get Base64 data
+                
+                // Save screenshot in session storage
+                sessionStorage.setItem("userScreenshot", base64Image);
+                
+                addMessage("✅ Screenshot uploaded!", "user");
+                uploadContainer.remove();
+                
+                // Now send all data to Google Sheets
+                sendToGoogleSheets();
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    });
 
     uploadContainer.appendChild(fileInput);
     chatBox.appendChild(uploadContainer);
@@ -295,11 +295,11 @@ function giveReward() {
 }
 
 function sendToGoogleSheets() {
-    let name = sessionStorage.getItem("userName");
-    let email = sessionStorage.getItem("userEmail");
-    let reward = sessionStorage.getItem("userReward");
-    let screenshot = sessionStorage.getItem("userScreenshot"); // Screenshot data
-    
+    let name = sessionStorage.getItem("userName") || "Unknown";
+    let email = sessionStorage.getItem("userEmail") || "Unknown";
+    let reward = sessionStorage.getItem("userReward") || "Not yet won";
+    let screenshot = sessionStorage.getItem("userScreenshot") || null;
+
     let data = {
         name: name,
         email: email,
@@ -307,7 +307,7 @@ function sendToGoogleSheets() {
         screenshot: screenshot
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbzDwvUb_AdFR-tjqdQ1ASqI6HyQKr5vwPHUyAujhKP3ottZuMX_FKo_uicrh0cGDVwX/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbwmn6IdWChlSRFeFpJYtSO9QzjQNrArXp0kSLfJV-dClJrNnYbdkmer1F8r7ODojuhz/exec", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -319,7 +319,7 @@ function sendToGoogleSheets() {
         if (data.status === "success") {
             addMessage("✅ Your review has been submitted! We will verify and email your reward within 12 hours.", "bot");
         } else {
-            addMessage("❌ Error submitting your review: " + data.message, "bot");
+            addMessage("❌ Error submitting your review. Please try again.", "bot");
         }
     })
     .catch(error => {
