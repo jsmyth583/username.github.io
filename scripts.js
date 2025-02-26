@@ -294,19 +294,20 @@ function giveReward() {
     saveChatState();
 }
 
-function sendToGoogleSheets(imageData) {
+function sendToGoogleSheets() {
     let name = sessionStorage.getItem("userName");
     let email = sessionStorage.getItem("userEmail");
     let reward = sessionStorage.getItem("userReward");
-
+    let screenshot = sessionStorage.getItem("userScreenshot"); // Screenshot data
+    
     let data = {
         name: name,
         email: email,
         reward: reward,
-        screenshot: imageData  // Send base64 image directly
+        screenshot: screenshot
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbylCFUtbkrv0_rt5CwJg4xhEM4X_iVVxHAxSRZKw8HlYGN8WJgAmT-hGi7KqUO4nk40/exec", {  // ✅ Use the new URL
+    fetch("https://script.google.com/macros/s/AKfycbxxB3Ebkpvk2S2c41DDmPfoQiGBMydxHNl4D-qwKw4W_5vOpOMonG3vvfimHNOesza0/exec", {  // ✅ Replace with new URL
         method: "POST",
         headers: {
             "Content-Type": "application/json"
