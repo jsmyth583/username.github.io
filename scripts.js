@@ -307,7 +307,7 @@ function sendToGoogleSheets() {
         screenshot: screenshot
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbwn9TwRdg6IMhrA6tqxNVrdfN6caey36EXoOcoH7_LLP6AetTJJ4I7otAjMn1T-t9Li/exec", { // ✅ Use new URL
+    fetch("https://script.google.com/macros/s/AKfycbzDwvUb_AdFR-tjqdQ1ASqI6HyQKr5vwPHUyAujhKP3ottZuMX_FKo_uicrh0cGDVwX/exec", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -319,7 +319,7 @@ function sendToGoogleSheets() {
         if (data.status === "success") {
             addMessage("✅ Your review has been submitted! We will verify and email your reward within 12 hours.", "bot");
         } else {
-            addMessage("❌ Error submitting your review. Please try again.", "bot");
+            addMessage("❌ Error submitting your review: " + data.message, "bot");
         }
     })
     .catch(error => {
