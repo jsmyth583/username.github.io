@@ -307,7 +307,7 @@ function sendToGoogleSheets() {
         screenshot: screenshot
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbxxB3Ebkpvk2S2c41DDmPfoQiGBMydxHNl4D-qwKw4W_5vOpOMonG3vvfimHNOesza0/exec", {  // ✅ Replace with new URL
+    fetch("https://script.google.com/macros/s/AKfycbwn9TwRdg6IMhrA6tqxNVrdfN6caey36EXoOcoH7_LLP6AetTJJ4I7otAjMn1T-t9Li/exec", { // ✅ Use new URL
         method: "POST",
         headers: {
             "Content-Type": "application/json"
