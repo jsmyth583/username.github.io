@@ -303,10 +303,10 @@ function sendToGoogleSheets(imageData) {
         name: name,
         email: email,
         reward: reward,
-        screenshot: imageData  // Send Base64 image directly
+        screenshot: imageData  // Send base64 image directly
     };
 
-    fetch("https://script.google.com/macros/s/AKfycbylCFUtbkrv0_rt5CwJg4xhEM4X_iVVxHAxSRZKw8HlYGN8WJgAmT-hGi7KqUO4nk40/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbylCFUtbkrv0_rt5CwJg4xhEM4X_iVVxHAxSRZKw8HlYGN8WJgAmT-hGi7KqUO4nk40/exec", {  // ✅ Use the new URL
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -316,7 +316,7 @@ function sendToGoogleSheets(imageData) {
     .then(response => response.json())
     .then(data => {
         if (data.status === "success") {
-            addMessage("✅ Screenshot uploaded successfully! We will validate your review and email your reward within 12 hours.", "bot");
+            addMessage("✅ Your review has been submitted! We will verify and email your reward within 12 hours.", "bot");
         } else {
             addMessage("❌ Error submitting your review. Please try again.", "bot");
         }
