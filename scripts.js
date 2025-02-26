@@ -187,24 +187,32 @@ function addFileUploadOption() {
 
     fileInput.addEventListener("change", function () {
         if (fileInput.files.length > 0) {
-            addMessage("You uploaded: " + fileInput.files[0].name, "user");
-            uploadContainer.remove();
-            setTimeout(() => {
-                askForName();
-            }, 1000);
+            let file = fileInput.files[0];
+            let reader = new FileReader();
+            
+            reader.onloadend = function () {
+                let base64Image = reader.result.split(",")[1]; // Get Base64 data
+                
+                // Save screenshot in session storage
+                sessionStorage.setItem("userScreenshot", base64Image);
+                
+                addMessage("✅ Screenshot uploaded!", "user");
+                uploadContainer.remove();
+                
+                // Now send all data to Google Sheets
+                sendToGoogleSheets();
+            };
+            
+            reader.readAsDataURL(file);
         }
     });
 
     uploadContainer.appendChild(fileInput);
     chatBox.appendChild(uploadContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
-
-    // 🔥 Hide input field & send button during file upload
-    document.getElementById("user-input").style.display = "none";
-    document.getElementById("send-button").style.display = "none";
-
     saveChatState();
 }
+
 
 
 function askForName() {
@@ -221,28 +229,37 @@ function finalThankYou(email) {
     
     // Retrieve stored values
     let name = sessionStorage.getItem("userName");
-    let reward = sessionStorage.getItem("userReward");
+    let reward = sessionStorage.getItem("userReward") || "Not yet won";
 
-    // Send data to Google Sheets
-    sendDataToGoogleSheets(name, email, reward);
+    // Check if screenshot exists
+    let screenshotInput = document.getElementById("screenshot-input");
+    
+    if (!name || !email) {
+        addMessage("Error: Missing name or email.", "bot");
+        return;
+    }
 
     // Display confirmation message
     addMessage("Thank you for submitting your details! Your review will be validated, and your voucher will be emailed within 12 hours.", "bot");
 
-    // Add a button to trigger the spinner
-    let chatBox = document.getElementById("chat-box");
-    let spinButton = document.createElement("button");
-    spinButton.textContent = "🎰 Spin the Wheel!";
-    spinButton.classList.add("chat-button");
-    spinButton.onclick = function () {
-        spinButton.remove(); // Remove the button after clicking
-        showSpinningAnimation();
-    };
+    // Add the spin button
+    addSpinButton();
 
-    chatBox.appendChild(spinButton);
-    chatBox.scrollTop = chatBox.scrollHeight;
-    saveChatState();
+    if (screenshotInput && screenshotInput.files.length > 0) {
+        let file = screenshotInput.files[0];
+        let reader = new FileReader();
+        
+        reader.onload = function(event) {
+            let base64String = event.target.result.split(",")[1]; // Extract Base64 data
+            sendDataToGoogleSheets(name, email, reward, base64String);
+        };
+
+        reader.readAsDataURL(file);
+    } else {
+        sendDataToGoogleSheets(name, email, reward, null);
+    }
 }
+
 
 
 // Function to create spinning animation
@@ -277,23 +294,36 @@ function giveReward() {
     saveChatState();
 }
 
-function sendDataToGoogleSheets(name, email, reward) {
-    let url = "https://script.google.com/macros/s/AKfycbxilXgaGzITkwmmOoAFuw2xJO9BjkD3zozpwQ1ZmNh1wab8IYiHO6V47qD3R1_HUxEp/exec"; // Your Web App URL
+function sendToGoogleSheets() {
+    let name = sessionStorage.getItem("userName") || "Unknown";
+    let email = sessionStorage.getItem("userEmail") || "Unknown";
+    let reward = sessionStorage.getItem("userReward") || "Not yet won";
+    let screenshot = sessionStorage.getItem("userScreenshot") || null;
 
     let data = {
         name: name,
         email: email,
-        reward: reward || "Not Yet Won"
+        reward: reward,
+        screenshot: screenshot
     };
 
-    fetch(url, {
+    fetch("https://script.google.com/macros/s/AKfycbzueq0RJ3D-5k0xhOYl3m6CVEzLjD0-o6LWonjJ7cF7imOz7-wx2vfai5dKha56w7P-/exec", {
         method: "POST",
-        mode: "no-cors",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
     })
-    .then(response => console.log("Data sent successfully"))
-    .catch(error => console.error("Error sending data:", error));
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            addMessage("✅ Your review has been submitted! We will verify and email your reward within 12 hours.", "bot");
+        } else {
+            addMessage("❌ Error submitting your review. Please try again.", "bot");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        addMessage("❌ Error submitting your review. Please try again.", "bot");
+    });
 }
