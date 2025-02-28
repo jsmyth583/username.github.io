@@ -1,3 +1,9 @@
+var screenshot = null;
+var name = null;
+var email = null;
+var reward = null;
+
+
 document.addEventListener("DOMContentLoaded", function () {
     let startButton = document.getElementById("start-button");
     if (startButton) {
@@ -21,6 +27,7 @@ function restoreChat() {
     if (savedChat) {
         chatHistory = JSON.parse(savedChat);
         chatHistory.forEach(entry => {
+            
             addMessage(entry.text, "bot");
             if (entry.options.length > 0) {
                 addButton(entry.options, entry.callback);
@@ -43,7 +50,7 @@ function startChat() {
     ], handleReviewPlatform);
 }
 
-function askQuestion(text, options = [], callback = null) {
+function askQuestion(text, options = [], callback = null, type = "text") {
     addMessage(text, "bot");
     chatHistory.push({ text, options, callback });
     saveChatState();
@@ -51,13 +58,13 @@ function askQuestion(text, options = [], callback = null) {
     if (options.length > 0) {
         addButton(options, callback);
     } else {
-        enableUserInput(callback);
+        enableUserInput(callback, type);
     }
 
     showGoBackButton();
 }
 
-function enableUserInput(nextStep) {
+function enableUserInput(nextStep, type="text") {
     let userInput = document.getElementById("user-input");
     let sendButton = document.getElementById("send-button");
 
@@ -68,6 +75,12 @@ function enableUserInput(nextStep) {
     sendButton.onclick = function () {
         let inputText = userInput.value.trim();
         if (inputText) {
+            if (type === "name") {
+                name = inputText;
+            } else if (type === "email") {
+                email = inputText;
+            }
+
             addMessage("You: " + inputText, "user");
             userInput.value = "";
             userInput.style.display = "none";
@@ -116,7 +129,7 @@ function showGoBackButton() {
 
     if (chatHistory.length > 1) {
         let backButton = document.createElement("button");
-        backButton.textContent = "← Go Back";
+        backButton.textContent = "â† Go Back";
         backButton.id = "go-back-button";
         backButton.classList.add("chat-button");
 
@@ -187,6 +200,10 @@ function addFileUploadOption() {
 
     fileInput.addEventListener("change", function () {
         if (fileInput.files.length > 0) {
+            const reader = new FileReader();
+            const file = fileInput.files[0];
+            screenshot = file;
+            
             addMessage("You uploaded: " + fileInput.files[0].name, "user");
             uploadContainer.remove();
             setTimeout(() => {
@@ -199,7 +216,7 @@ function addFileUploadOption() {
     chatBox.appendChild(uploadContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    // 🔥 Hide input field & send button during file upload
+    // ðŸ”¥ Hide input field & send button during file upload
     document.getElementById("user-input").style.display = "none";
     document.getElementById("send-button").style.display = "none";
 
@@ -208,12 +225,13 @@ function addFileUploadOption() {
 
 
 function askForName() {
-    askQuestion("Thank you! Please provide your Full Name.", [], askForEmail);
+    askQuestion("Thank you! Please provide your Full Name.", [], askForEmail, "name");
+    
 }
 
 function askForEmail(name) {
     sessionStorage.setItem("userName", name);
-    askQuestion("Now, please provide your Email Address.", [], finalThankYou);
+    askQuestion("Now, please provide your Email Address.", [], finalThankYou, 'email');
 }
 
 function finalThankYou(email) {
@@ -223,7 +241,7 @@ function finalThankYou(email) {
     // Add a button to trigger the spinner
     let chatBox = document.getElementById("chat-box");
     let spinButton = document.createElement("button");
-    spinButton.textContent = "🎰 Spin the Wheel!";
+    spinButton.textContent = "ðŸŽ° Spin the Wheel!";
     spinButton.classList.add("chat-button");
     spinButton.onclick = function () {
         spinButton.remove(); // Remove the button after clicking
@@ -242,7 +260,7 @@ function showSpinningAnimation() {
     // Create a spinning message
     let spinner = document.createElement("div");
     spinner.classList.add("spinner");
-    spinner.textContent = "🎰 Spinning...";
+    spinner.textContent = "ðŸŽ° Spinning...";
 
     chatBox.appendChild(spinner);
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -256,11 +274,39 @@ function showSpinningAnimation() {
 
 // Function to randomly select a reward
 function giveReward() {
-    let rewards = ["Chips 🍟", "Naan Bread", "Onion Bhaji", "Chicken Pakora"];
+    let rewards = ["Chips ðŸŸ", "Naan Bread", "Onion Bhaji", "Chicken Pakora"];
     let chosenReward = rewards[Math.floor(Math.random() * rewards.length)];
+    reward = chosenReward;
 
+    const file = screenshot;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async function () {
+        const base64String = reader.result.split(',')[1];  // Remove "data:image/png;base64,"
+
+        const formData = new URLSearchParams();
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("reward", reward);
+        formData.append("image", base64String);
+        formData.append("filename", file.name);
+        formData.append("mimeType", file.type);
+
+            const response = await fetch("https://script.google.com/macros/s/AKfycbwsNF-jY7z0vMVQ5Gid2tHCu1LmPFX_x31-fajgLjIUj0HGBWiGiDSYP7M4zgqeFXkZ/exec", {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            document.getElementById("status").innerHTML = `Image uploaded: <a href="${result.fileUrl}" target="_blank">View Image</a>`;
+        } else {
+            alert("Upload failed. Check console.");
+            console.error(result.error);
+        }
+    }
     // Display the reward to the user
-    addMessage(`🎉 You have won **${chosenReward}**!`, "bot");
+    addMessage(`ðŸŽ‰ You have won **${chosenReward}**!`, "bot");
     addMessage("Your review will be validated, and your voucher will be emailed to you within 12 hours.", "bot");
     addMessage("We appreciate your support and hope to serve you again soon!", "bot");
 
