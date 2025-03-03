@@ -291,24 +291,25 @@ function giveReward() {
         formData.append("image", base64String);
         formData.append("filename", file.name);
         formData.append("mimeType", file.type);
-
-            const response = await fetch("https://script.google.com/macros/s/AKfycbwsNF-jY7z0vMVQ5Gid2tHCu1LmPFX_x31-fajgLjIUj0HGBWiGiDSYP7M4zgqeFXkZ/exec", {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbxU98PMpE95LtUOwqj3ifLZUfeYQhtT4NCCWWb0ycT4dPYFKlifZpwzN_VtzGslErHC/exec", {
             method: "POST",
             body: formData
         });
 
         const result = await response.json();
         if (result.success) {
-            document.getElementById("status").innerHTML = `Image uploaded: <a href="${result.fileUrl}" target="_blank">View Image</a>`;
+            addMessage(`ðŸŽ‰ You have won **${chosenReward}**!`, "bot");
+            addMessage("Your review will be validated, and your voucher will be emailed to you within 12 hours.", "bot");
+            addMessage("We appreciate your support and hope to serve you again soon!", "bot");
+            // document.getElementById("status").innerHTML = `Image uploaded: <a href="${result.fileUrl}" target="_blank">View Image</a>`;
+
         } else {
-            alert("Upload failed. Check console.");
             console.error(result.error);
+            addMessage(`${result.error}`, "bot");
+            // alert(result.error);
         }
     }
     // Display the reward to the user
-    addMessage(`ðŸŽ‰ You have won **${chosenReward}**!`, "bot");
-    addMessage("Your review will be validated, and your voucher will be emailed to you within 12 hours.", "bot");
-    addMessage("We appreciate your support and hope to serve you again soon!", "bot");
-
+    
     saveChatState();
 }
