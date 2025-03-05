@@ -129,7 +129,7 @@ function showGoBackButton() {
 
     if (chatHistory.length > 1) {
         let backButton = document.createElement("button");
-        backButton.textContent = "â† Go Back";
+        backButton.textContent = "Go Back";
         backButton.id = "go-back-button";
         backButton.classList.add("chat-button");
 
@@ -241,7 +241,7 @@ function finalThankYou(email) {
     // Add a button to trigger the spinner
     let chatBox = document.getElementById("chat-box");
     let spinButton = document.createElement("button");
-    spinButton.textContent = "ðŸŽ° Spin the Wheel!";
+    spinButton.textContent = "Spin the Wheel!";
     spinButton.classList.add("chat-button");
     spinButton.onclick = function () {
         spinButton.remove(); // Remove the button after clicking
@@ -260,7 +260,7 @@ function showSpinningAnimation() {
     // Create a spinning message
     let spinner = document.createElement("div");
     spinner.classList.add("spinner");
-    spinner.textContent = "ðŸŽ° Spinning...";
+    spinner.textContent = "Spinning...";
 
     chatBox.appendChild(spinner);
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -269,12 +269,12 @@ function showSpinningAnimation() {
     setTimeout(() => {
         spinner.remove(); // Remove the spinning animation
         giveReward(); // Display the reward
-    }, 3000);
+    }, 2000);
 }
 
 // Function to randomly select a reward
 function giveReward() {
-    let rewards = ["Chips ðŸŸ", "Naan Bread", "Onion Bhaji", "Chicken Pakora"];
+    let rewards = ["Chips", "Naan Bread", "Onion Bhaji", "Chicken Pakora"];
     let chosenReward = rewards[Math.floor(Math.random() * rewards.length)];
     reward = chosenReward;
 
@@ -298,7 +298,7 @@ function giveReward() {
 
         const result = await response.json();
         if (result.success) {
-            addMessage(`ðŸŽ‰ You have won **${chosenReward}**!`, "bot");
+            addMessage(`You have won ${chosenReward}!`, "bot");
             addMessage("Your review will be validated, and your voucher will be emailed to you within 12 hours.", "bot");
             addMessage("We appreciate your support and hope to serve you again soon!", "bot");
             // document.getElementById("status").innerHTML = `Image uploaded: <a href="${result.fileUrl}" target="_blank">View Image</a>`;
