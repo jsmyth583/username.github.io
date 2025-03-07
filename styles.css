@@ -1,4 +1,7 @@
 
+/* styles.css */
+
+/* ===== Overall Page Layout ===== */
 body {
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
@@ -22,66 +25,77 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 #chat-header {
-    background: #28A745;
+    background: #28a745;
     color: white;
     padding: 15px;
     text-align: center;
     font-size: 18px;
     font-weight: bold;
-    animation: slideIn 0.5s ease-in-out;
-}
-
-@keyframes slideIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+    display: none;
+    /* Hidden until chat starts */
 }
 
 #chat-box {
     flex: 1;
     padding: 15px;
     overflow-y: auto;
-    display: flex;
+    display: none;
     flex-direction: column;
     gap: 10px;
-    background-color: #E4E6EB;
+    background-color: #e4e6eb;
     max-height: 400px;
     transition: all 0.3s ease-in-out;
 }
 
-/* ✨ Make Chat Messages Bigger */
+/* ===== Chat Messages ===== */
 .chat-message {
-    font-size: 18px; /* Increases text size inside bubbles */
-    padding: 15px 20px; /* Adds more space around text */
-    max-width: 80%; /* Makes bubbles wider */
+    font-size: 18px;
+    padding: 15px 20px;
+    max-width: 80%;
+    margin-bottom: 5px;
+    animation: messageFade 0.3s ease-in-out;
 }
 
 @keyframes messageFade {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-/* ✨ Make Bot Messages Bigger */
 .bot-message {
-    border-radius: 20px; /* More rounded corners */
-    background: #fff; /* Keeps it white */
-    color: #000; /* Text stays black */
-    box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.15); /* Adds a soft shadow */
+    border-radius: 20px;
+    background: #fff;
+    color: #000;
+    box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.15);
 }
 
-
-/* ✨ Make User Messages Bigger */
 .user-message {
-    font-size: 18px; /* Bigger text */
-    padding: 15px 20px; /* More space inside */
-    border-radius: 20px; /* Keeps the rounded look */
+    border-radius: 20px;
+    background: #dcf8c6;
+    /* Light green for user bubble */
+    margin-left: auto;
+    /* Push to right side */
 }
 
-
+/* ===== Buttons ===== */
 .button-container {
     display: flex;
     justify-content: center;
@@ -89,34 +103,35 @@ body {
     margin-top: 10px;
 }
 
-/* ✨ Make Buttons Bigger */
 .chat-button {
-    font-size: 18px; /* Larger text */
-    padding: 12px 18px; /* More space around text */
-    border-radius: 25px; /* Smooth rounded look */
-}
-
-
-/* Go Back Button - Less distracting */
-#go-back-button {
-    background: #d3d3d3; /* Light gray color */
-    color: #333; /* Dark gray text */
-    padding: 8px 12px;
-    font-size: 12px;
-    border-radius: 15px;
+    font-size: 16px;
+    padding: 12px 18px;
+    border-radius: 25px;
     border: none;
+    background: #28a745;
+    color: white;
     cursor: pointer;
     transition: background 0.2s ease-in-out;
-}
-
-#go-back-button:hover {
-    background: #b0b0b0; /* Slightly darker gray on hover */
+    margin-bottom: 10px;
 }
 
 .chat-button:hover {
     background: #218838;
 }
 
+/* "Go Back" button smaller style */
+#go-back-button {
+    background: #d3d3d3;
+    color: #333;
+    font-size: 14px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    margin-top: 10px;
+}
+
+/* ===== File Upload Style ===== */
 .upload-container {
     display: flex;
     justify-content: center;
@@ -124,40 +139,47 @@ body {
 }
 
 .file-input {
-    border: none;
-    padding: 5px;
+    border: 2px dashed #ccc;
+    padding: 10px;
     font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
 }
 
-/* Make input field bigger */
+/* ===== Text Input & Send Button ===== */
 #user-input {
-    font-size: 18px;
+    font-size: 16px;
     padding: 12px;
-    width: 90%;
+    width: 80%;
     max-width: 350px;
     border: 2px solid #ccc;
     border-radius: 10px;
-    display: none; /* Hidden by default */
+    display: none;
+    margin: 10px auto 0;
+    /* center */
 }
 
-/* Button styling */
 #send-button {
     font-size: 16px;
     padding: 10px 20px;
     border-radius: 10px;
-    background: #28A745;
+    background: #28a745;
     color: white;
     border: none;
     cursor: pointer;
-    display: none; /* Hidden by default */
+    display: none;
+    margin: 10px auto;
+    /* center */
 }
 
 #send-button:hover {
     background: #218838;
 }
 
+/* ===== Start Button ===== */
 #start-button {
-    background-color: #28A745;  /* Green */
+    background-color: #28a745;
     color: white;
     font-size: 18px;
     font-weight: bold;
@@ -175,74 +197,51 @@ body {
     transform: scale(1.05);
 }
 
-/* Landing Page Title Styling */
-#landing-title {
-    font-size: 24px; /* Increase font size */
-    font-weight: bold; /* Make it bold */
-    text-align: center; /* Center the text */
-    color: white; /* Keep text white */
-    line-height: 1.4; /* Adjust spacing between lines */
-    padding: 20px; /* Add more space inside */
-}
-
-/* Add space between lines */
-#landing-title span {
-    display: block; /* Makes each line separate */
-    margin-bottom: 10px; /* Adds space between lines */
-}
-
-
-@keyframes bounceIn {
-    0% { transform: scale(0.9); opacity: 0; }
-    50% { transform: scale(1.05); opacity: 1; }
-    100% { transform: scale(1); }
-}
-
-.typing-indicator {
-    display: none;
-    font-size: 14px;
-    color: gray;
-    padding: 10px;
-    font-style: italic;
-}
-
-/* Spinner Animation */
-.spinner {
+/* ===== Spinning Wheel ===== */
+.wheel-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 15px;
-    background: #4CAF50;
-    color: white;
-    border-radius: 10px;
-    text-align: center;
-    margin: 10px auto;
-    width: 120px;
-    animation: spinAnimation 1s linear infinite;
+    justify-content: center;
+    margin: 20px auto;
 }
 
-/* Spinning Animation */
+.wheel {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 8px solid #ccc;
+    /* Example 4-slice conic gradient */
+    background: conic-gradient(#28a745 0deg 90deg, #fff 90deg 180deg, #28a745 180deg 270deg, #fff 270deg 360deg);
+    /* Spin it continuously for 2 seconds (we'll stop it after) */
+    animation: spinAnimation 2s linear infinite;
+    position: relative;
+}
+
 @keyframes spinAnimation {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
-/* Reward Message */
+/* ===== Reward & Voucher Messages ===== */
 .reward-message {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     font-size: 20px;
     font-weight: bold;
-    color: #4CAF50;
-    background: #f8f8f8;
-    padding: 15px;
-    border: 2px solid #4CAF50;
-    border-radius: 10px;
+    color: #28a745;
     text-align: center;
-    margin: 10px auto;
-    width: fit-content;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+}
+
+.voucher-message {
+    font-size: 16px;
+    color: #000;
+    text-align: center;
+    margin-top: 10px;
     max-width: 80%;
 }
