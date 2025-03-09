@@ -387,7 +387,7 @@ function giveReward(wheelContainer, wheel) {
   // Display bold reward message above the wheel
   let rewardMessage = document.createElement("div");
   rewardMessage.classList.add("reward-message");
-  rewardMessage.innerHTML = `<strong>CONGRATULATIONS!</strong> You have won a FREE <strong>${chosenReward}</strong>!`;
+  rewardMessage.innerHTML = `<strong>CONGRATULATIONS!</strong> You have won <strong>${chosenReward}</strong>!`;
   wheelContainer.insertBefore(rewardMessage, wheel);
 
   // Display the “voucher emailed” message below the wheel
